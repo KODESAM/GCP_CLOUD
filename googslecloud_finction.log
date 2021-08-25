@@ -1,0 +1,88 @@
+
+-----------------------------
+Welcome to Cloud Shell! Type "help" to get started.
+Your Cloud Platform project in this session is set to qwiklabs-gcp-02-0b40d17fc31a.
+Use “gcloud config set project [PROJECT_ID]” to change to a different project.
+student_01_6427fdb9e52c@cloudshell:~ (qwiklabs-gcp-02-0b40d17fc31a)$
+student_01_6427fdb9e52c@cloudshell:~ (qwiklabs-gcp-02-0b40d17fc31a)$ pwd
+/home/student_01_6427fdb9e52c
+student_01_6427fdb9e52c@cloudshell:~ (qwiklabs-gcp-02-0b40d17fc31a)$ mkdir gcf_hello_world
+student_01_6427fdb9e52c@cloudshell:~ (qwiklabs-gcp-02-0b40d17fc31a)$ cd gcf_hello_world
+student_01_6427fdb9e52c@cloudshell:~/gcf_hello_world (qwiklabs-gcp-02-0b40d17fc31a)$ nano index.js
+student_01_6427fdb9e52c@cloudshell:~/gcf_hello_world (qwiklabs-gcp-02-0b40d17fc31a)$ ls -l
+total 4
+-rw-r--r-- 1 student_01_6427fdb9e52c student_01_6427fdb9e52c 476 Aug 25 17:27 index.js
+student_01_6427fdb9e52c@cloudshell:~/gcf_hello_world (qwiklabs-gcp-02-0b40d17fc31a)$ gsutil mb -p qwiklabs-gcp-02-0b40d17fc31a gs://qwiklabs-gcp-02-0b40d17fc31aCreating gs://qwiklabs-gcp-02-0b40d17fc31a/...
+student_01_6427fdb9e52c@cloudshell:~/gcf_hello_world (qwiklabs-gcp-02-0b40d17fc31a)$ gcloud functions deploy helloWorld \
+> --stage-bucket qwiklabs-gcp-02-0b40d17fc31a \
+> --trigger-topic hello_world \
+> --runtime nodejs8
+Deploying function (may take a while - up to 2 minutes)...⠹
+For Cloud Build Logs, visit: https://console.cloud.google.com/cloud-build/builds;region=us-central1/e161838f-6fa5-4b92-b6a0-b1802548e083?project=639318371661
+Deploying function (may take a while - up to 2 minutes)...done.
+availableMemoryMb: 256
+buildId: e161838f-6fa5-4b92-b6a0-b1802548e083
+buildName: projects/639318371661/locations/us-central1/builds/e161838f-6fa5-4b92-b6a0-b1802548e083
+entryPoint: helloWorld
+eventTrigger:
+  eventType: google.pubsub.topic.publish
+  failurePolicy: {}
+  resource: projects/qwiklabs-gcp-02-0b40d17fc31a/topics/hello_world
+  service: pubsub.googleapis.com
+ingressSettings: ALLOW_ALL
+labels:
+  deployment-tool: cli-gcloud
+name: projects/qwiklabs-gcp-02-0b40d17fc31a/locations/us-central1/functions/helloWorld
+runtime: nodejs8
+serviceAccountEmail: qwiklabs-gcp-02-0b40d17fc31a@appspot.gserviceaccount.com
+sourceArchiveUrl: gs://qwiklabs-gcp-02-0b40d17fc31a/us-central1-projects/qwiklabs-gcp-02-0b40d17fc31a/locations/us-central1/functions/helloWorld-fnvihbfqktxd.zip
+status: ACTIVE
+timeout: 60s
+updateTime: '2021-08-25T17:31:49.921Z'
+versionId: '1'
+student_01_6427fdb9e52c@cloudshell:~/gcf_hello_world (qwiklabs-gcp-02-0b40d17fc31a)$ gcloud functions describe helloWorld
+availableMemoryMb: 256
+buildId: e161838f-6fa5-4b92-b6a0-b1802548e083
+buildName: projects/639318371661/locations/us-central1/builds/e161838f-6fa5-4b92-b6a0-b1802548e083
+entryPoint: helloWorld
+eventTrigger:
+  eventType: google.pubsub.topic.publish
+  failurePolicy: {}
+  resource: projects/qwiklabs-gcp-02-0b40d17fc31a/topics/hello_world
+  service: pubsub.googleapis.com
+ingressSettings: ALLOW_ALL
+labels:
+  deployment-tool: cli-gcloud
+name: projects/qwiklabs-gcp-02-0b40d17fc31a/locations/us-central1/functions/helloWorld
+runtime: nodejs8
+serviceAccountEmail: qwiklabs-gcp-02-0b40d17fc31a@appspot.gserviceaccount.com
+sourceArchiveUrl: gs://qwiklabs-gcp-02-0b40d17fc31a/us-central1-projects/qwiklabs-gcp-02-0b40d17fc31a/locations/us-central1/functions/helloWorld-fnvihbfqktxd.zip
+status: ACTIVE
+timeout: 60s
+updateTime: '2021-08-25T17:31:49.921Z'
+versionId: '1'
+student_01_6427fdb9e52c@cloudshell:~/gcf_hello_world (qwiklabs-gcp-02-0b40d17fc31a)$ cat index.js
+/**
+* Background Cloud Function to be triggered by Pub/Sub.
+* This function is exported by index.js, and executed when
+* the trigger topic receives a message.
+*
+* @param {object} data The event payload.
+* @param {object} context The event metadata.
+*/
+exports.helloWorld = (data, context) => {
+const pubSubMessage = data;
+const name = pubSubMessage.data
+    ? Buffer.from(pubSubMessage.data, 'base64').toString() : "Hello World";
+console.log(`My Cloud Function: ${name}`);
+};
+student_01_6427fdb9e52c@cloudshell:~/gcf_hello_world (qwiklabs-gcp-02-0b40d17fc31a)$ DATA=$(printf 'Hello World!'|base64) && gcloud functions call helloWorld --data '{"data":"'$DATA'"}'
+executionId: x884q4f4i565
+student_01_6427fdb9e52c@cloudshell:~/gcf_hello_world (qwiklabs-gcp-02-0b40d17fc31a)$ gcloud functions logs read helloWorld
+Listed 0 items.
+student_01_6427fdb9e52c@cloudshell:~/gcf_hello_world (qwiklabs-gcp-02-0b40d17fc31a)$ gcloud functions logs read helloWorld
+LEVEL  NAME        EXECUTION_ID  TIME_UTC                 LOG
+D      helloWorld  x884q4f4i565  2021-08-25 17:32:35.872  Function execution took 71 ms, finished with status: 'ok'
+I      helloWorld  x884q4f4i565  2021-08-25 17:32:35.856  My Cloud Function: Hello World!
+D      helloWorld  x884q4f4i565  2021-08-25 17:32:35.801  Function execution started
+student_01_6427fdb9e52c@cloudshell:~/gcf_hello_world (qwiklabs-gcp-02-0b40d17fc31a)$
