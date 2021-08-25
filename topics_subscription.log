@@ -1,0 +1,155 @@
+Welcome to Cloud Shell! Type "help" to get started.
+Your Cloud Platform project in this session is set to qwiklabs-gcp-02-14ee3913da15.
+Use “gcloud config set project [PROJECT_ID]” to change to a different project.
+student_01_6427fdb9e52c@cloudshell:~ (qwiklabs-gcp-02-14ee3913da15)$
+student_01_6427fdb9e52c@cloudshell:~ (qwiklabs-gcp-02-14ee3913da15)$ gcloud pubsub subscriptions pull --auto-ack MySub
+Listed 0 items.
+student_01_6427fdb9e52c@cloudshell:~ (qwiklabs-gcp-02-14ee3913da15)$ gcloud pubsub subscriptions pull --auto-ack MySub
+┌─────────────┬──────────────────┬──────────────┬────────────┬──────────────────┐
+│     DATA    │    MESSAGE_ID    │ ORDERING_KEY │ ATTRIBUTES │ DELIVERY_ATTEMPT │
+├─────────────┼──────────────────┼──────────────┼────────────┼──────────────────┤
+│ Hello World │ 2914579502007615 │              │            │                  │
+└─────────────┴──────────────────┴──────────────┴────────────┴──────────────────┘
+student_01_6427fdb9e52c@cloudshell:~ (qwiklabs-gcp-02-14ee3913da15)$ gcloud pubsub topics create myTopic2
+Created topic [projects/qwiklabs-gcp-02-14ee3913da15/topics/myTopic2].
+student_01_6427fdb9e52c@cloudshell:~ (qwiklabs-gcp-02-14ee3913da15)$ gcloud pubsub topics create Test1
+Created topic [projects/qwiklabs-gcp-02-14ee3913da15/topics/Test1].
+student_01_6427fdb9e52c@cloudshell:~ (qwiklabs-gcp-02-14ee3913da15)$ gcloud pubsub topics create Test2
+Created topic [projects/qwiklabs-gcp-02-14ee3913da15/topics/Test2].
+student_01_6427fdb9e52c@cloudshell:~ (qwiklabs-gcp-02-14ee3913da15)$ gcloud pubsub topics list
+---
+name: projects/qwiklabs-gcp-02-14ee3913da15/topics/myTopic
+---
+name: projects/qwiklabs-gcp-02-14ee3913da15/topics/Test2
+---
+name: projects/qwiklabs-gcp-02-14ee3913da15/topics/Test1
+---
+name: projects/qwiklabs-gcp-02-14ee3913da15/topics/myTopic2
+student_01_6427fdb9e52c@cloudshell:~ (qwiklabs-gcp-02-14ee3913da15)$ gcloud  pubsub subscriptions create --topic myTopic2 mySubscription2
+Created subscription [projects/qwiklabs-gcp-02-14ee3913da15/subscriptions/mySubscription2].
+student_01_6427fdb9e52c@cloudshell:~ (qwiklabs-gcp-02-14ee3913da15)$ gcloud  pubsub subscriptions create --topic myTopic2 Test1
+Created subscription [projects/qwiklabs-gcp-02-14ee3913da15/subscriptions/Test1].
+student_01_6427fdb9e52c@cloudshell:~ (qwiklabs-gcp-02-14ee3913da15)$ gcloud  pubsub subscriptions create --topic myTopic2 Test1
+2ERROR: Failed to create subscription [projects/qwiklabs-gcp-02-14ee3913da15/subscriptions/Test1]: Resource already exists in the project (resource=Test1).
+ERROR: (gcloud.pubsub.subscriptions.create) Failed to create the following: [Test1].
+student_01_6427fdb9e52c@cloudshell:~ (qwiklabs-gcp-02-14ee3913da15)$ gcloud  pubsub subscriptions create --topic myTopic2 Test2
+Created subscription [projects/qwiklabs-gcp-02-14ee3913da15/subscriptions/Test2].
+student_01_6427fdb9e52c@cloudshell:~ (qwiklabs-gcp-02-14ee3913da15)$ gcloud pubsub topics list-subscriptions myTopic2
+---
+  projects/qwiklabs-gcp-02-14ee3913da15/subscriptions/Test1
+---
+  projects/qwiklabs-gcp-02-14ee3913da15/subscriptions/mySubscription2
+---
+  projects/qwiklabs-gcp-02-14ee3913da15/subscriptions/Test2
+student_01_6427fdb9e52c@cloudshell:~ (qwiklabs-gcp-02-14ee3913da15)$ gcloud pubsub topics publish myTopic2 --message "Hello"
+messageIds:
+- '2939530133624001'
+student_01_6427fdb9e52c@cloudshell:~ (qwiklabs-gcp-02-14ee3913da15)$ gcloud pubsub topics publish myTopic2 --message "Publisher's name is googlecloud"
+messageIds:
+- '2939896647880798'
+student_01_6427fdb9e52c@cloudshell:~ (qwiklabs-gcp-02-14ee3913da15)$ gcloud pubsub topics publish myTopic2 --message "Publisher likes to eat Desert"
+messageIds:
+- '2939811176461827'
+student_01_6427fdb9e52c@cloudshell:~ (qwiklabs-gcp-02-14ee3913da15)$ gcloud pubsub topics publish myTopic2 --message "Publisher thinks Pub/Sub is awesome"
+messageIds:
+- '2939817005246798'
+student_01_6427fdb9e52c@cloudshell:~ (qwiklabs-gcp-02-14ee3913da15)$ gcloud pubsub subscriptions pull mySubscription2 --auto-ack
+┌───────┬──────────────────┬──────────────┬────────────┬──────────────────┐
+│  DATA │    MESSAGE_ID    │ ORDERING_KEY │ ATTRIBUTES │ DELIVERY_ATTEMPT │
+├───────┼──────────────────┼──────────────┼────────────┼──────────────────┤
+│ Hello │ 2939530133624001 │              │            │                  │
+└───────┴──────────────────┴──────────────┴────────────┴──────────────────┘
+student_01_6427fdb9e52c@cloudshell:~ (qwiklabs-gcp-02-14ee3913da15)$ gcloud pubsub subscriptions pull mySubscription2 --auto-ack
+┌─────────────────────────────────┬──────────────────┬──────────────┬────────────┬──────────────────┐
+│               DATA              │    MESSAGE_ID    │ ORDERING_KEY │ ATTRIBUTES │ DELIVERY_ATTEMPT │
+├─────────────────────────────────┼──────────────────┼──────────────┼────────────┼──────────────────┤
+│ Publisher's name is googlecloud │ 2939896647880798 │              │            │                  │
+└─────────────────────────────────┴──────────────────┴──────────────┴────────────┴──────────────────┘
+student_01_6427fdb9e52c@cloudshell:~ (qwiklabs-gcp-02-14ee3913da15)$ gcloud pubsub subscriptions pull mySubscription2 --auto-ack
+┌───────────────────────────────┬──────────────────┬──────────────┬────────────┬──────────────────┐
+│              DATA             │    MESSAGE_ID    │ ORDERING_KEY │ ATTRIBUTES │ DELIVERY_ATTEMPT │
+├───────────────────────────────┼──────────────────┼──────────────┼────────────┼──────────────────┤
+│ Publisher likes to eat Desert │ 2939811176461827 │              │            │                  │
+└───────────────────────────────┴──────────────────┴──────────────┴────────────┴──────────────────┘
+student_01_6427fdb9e52c@cloudshell:~ (qwiklabs-gcp-02-14ee3913da15)$ gcloud pubsub subscriptions pull mySubscription2 --auto-ack
+┌─────────────────────────────────────┬──────────────────┬──────────────┬────────────┬──────────────────┐
+│                 DATA                │    MESSAGE_ID    │ ORDERING_KEY │ ATTRIBUTES │ DELIVERY_ATTEMPT │
+├─────────────────────────────────────┼──────────────────┼──────────────┼────────────┼──────────────────┤
+│ Publisher thinks Pub/Sub is awesome │ 2939817005246798 │              │            │                  │
+└─────────────────────────────────────┴──────────────────┴──────────────┴────────────┴──────────────────┘
+student_01_6427fdb9e52c@cloudshell:~ (qwiklabs-gcp-02-14ee3913da15)$ gcloud pubsub subscriptions pull mySubscription2 --auto-ack
+Listed 0 items.
+student_01_6427fdb9e52c@cloudshell:~ (qwiklabs-gcp-02-14ee3913da15)$ gcloud pubsub topics publish myTopic2 --message "Publisher is starting to get the hang of Pub/Sub"
+messageIds:
+- '2939837485695019'
+student_01_6427fdb9e52c@cloudshell:~ (qwiklabs-gcp-02-14ee3913da15)$ gcloud pubsub topics publish myTopic2 --message "Publisher wonders if all messages will be pulled"
+messageIds:
+- '2939831534836748'
+student_01_6427fdb9e52c@cloudshell:~ (qwiklabs-gcp-02-14ee3913da15)$ gcloud pubsub topics publish myTopic2 --message "Publisher will have to test to find out"
+messageIds:
+- '2939829783471654'
+student_01_6427fdb9e52c@cloudshell:~ (qwiklabs-gcp-02-14ee3913da15)$ gcloud pubsub subscriptions pull mySubscription2 --auto-ack --limit=3
+┌──────────────────────────────────────────────────┬──────────────────┬──────────────┬────────────┬──────────────────┐
+│                       DATA                       │    MESSAGE_ID    │ ORDERING_KEY │ ATTRIBUTES │ DELIVERY_ATTEMPT │
+├──────────────────────────────────────────────────┼──────────────────┼──────────────┼────────────┼──────────────────┤
+│ Publisher is starting to get the hang of Pub/Sub │ 2939837485695019 │              │            │                  │
+└──────────────────────────────────────────────────┴──────────────────┴──────────────┴────────────┴──────────────────┘
+student_01_6427fdb9e52c@cloudshell:~ (qwiklabs-gcp-02-14ee3913da15)$ gcloud pubsub subscriptions pull mySubscription2 --auto-ack --limit=3
+┌──────────────────────────────────────────────────┬──────────────────┬──────────────┬────────────┬──────────────────┐
+│                       DATA                       │    MESSAGE_ID    │ ORDERING_KEY │ ATTRIBUTES │ DELIVERY_ATTEMPT │
+├──────────────────────────────────────────────────┼──────────────────┼──────────────┼────────────┼──────────────────┤
+│ Publisher will have to test to find out          │ 2939829783471654 │              │            │                  │
+│ Publisher wonders if all messages will be pulled │ 2939831534836748 │              │            │                  │
+└──────────────────────────────────────────────────┴──────────────────┴──────────────┴────────────┴──────────────────┘
+student_01_6427fdb9e52c@cloudshell:~ (qwiklabs-gcp-02-14ee3913da15)$ gcloud pubsub subscriptions pull mySubscription2 --auto-ack --limit=3
+Listed 0 items.
+student_01_6427fdb9e52c@cloudshell:~ (qwiklabs-gcp-02-14ee3913da15)$ gcloud pubsub subscriptions list
+---
+ackDeadlineSeconds: 10
+expirationPolicy:
+  ttl: 2678400s
+messageRetentionDuration: 604800s
+name: projects/qwiklabs-gcp-02-14ee3913da15/subscriptions/myTopic-sub
+pushConfig: {}
+topic: projects/qwiklabs-gcp-02-14ee3913da15/topics/myTopic
+---
+ackDeadlineSeconds: 10
+expirationPolicy:
+  ttl: 2678400s
+messageRetentionDuration: 604800s
+name: projects/qwiklabs-gcp-02-14ee3913da15/subscriptions/MySub
+pushConfig: {}
+topic: projects/qwiklabs-gcp-02-14ee3913da15/topics/myTopic
+---
+ackDeadlineSeconds: 10
+expirationPolicy:
+  ttl: 2678400s
+messageRetentionDuration: 604800s
+name: projects/qwiklabs-gcp-02-14ee3913da15/subscriptions/Test1
+pushConfig: {}
+topic: projects/qwiklabs-gcp-02-14ee3913da15/topics/myTopic2
+---
+ackDeadlineSeconds: 10
+expirationPolicy:
+  ttl: 2678400s
+messageRetentionDuration: 604800s
+name: projects/qwiklabs-gcp-02-14ee3913da15/subscriptions/mySubscription2
+pushConfig: {}
+topic: projects/qwiklabs-gcp-02-14ee3913da15/topics/myTopic2
+---
+ackDeadlineSeconds: 10
+expirationPolicy:
+  ttl: 2678400s
+messageRetentionDuration: 604800s
+name: projects/qwiklabs-gcp-02-14ee3913da15/subscriptions/Test2
+pushConfig: {}
+topic: projects/qwiklabs-gcp-02-14ee3913da15/topics/myTopic2
+student_01_6427fdb9e52c@cloudshell:~ (qwiklabs-gcp-02-14ee3913da15)$ gcloud pubsub subscriptions delete Test1
+Deleted subscription [projects/qwiklabs-gcp-02-14ee3913da15/subscriptions/Test1].
+student_01_6427fdb9e52c@cloudshell:~ (qwiklabs-gcp-02-14ee3913da15)$ gcloud pubsub subscriptions delete Test2
+Deleted subscription [projects/qwiklabs-gcp-02-14ee3913da15/subscriptions/Test2].
+student_01_6427fdb9e52c@cloudshell:~ (qwiklabs-gcp-02-14ee3913da15)$ gcloud pubsub topics delete Test1
+Deleted topic [projects/qwiklabs-gcp-02-14ee3913da15/topics/Test1].
+student_01_6427fdb9e52c@cloudshell:~ (qwiklabs-gcp-02-14ee3913da15)$ gcloud pubsub topics delete Test2
+Deleted topic [projects/qwiklabs-gcp-02-14ee3913da15/topics/Test2].
+student_01_6427fdb9e52c@cloudshell:~ (qwiklabs-gcp-02-14ee3913da15)$
