@@ -1,0 +1,224 @@
+
+
+
+gcloud compute networks create managementnet --project=qwiklabs-gcp-01-b4dca281b24b --subnet-mode=custom --mtu=1460 --bgp-routing-mode=regional && gcloud compute networks subnets create managementsubnet-us --project=qwiklabs-gcp-01-b4dca281b24b --range=10.130.0.0/20 --network=managementnet --region=us-central1
+
+gcloud compute --project=qwiklabs-gcp-01-b4dca281b24b firewall-rules create managementnet-allow-icmp-ssh-rdp --direction=INGRESS --priority=1000 --network=managementnet --action=ALLOW --rules=tcp:22,tcp:3389,icmp --source-ranges=0.0.0.0/0
+
+
+Welcome to Cloud Shell! Type "help" to get started.
+Your Cloud Platform project in this session is set to qwiklabs-gcp-01-b4dca281b24b.
+Use “gcloud config set project [PROJECT_ID]” to change to a different project.
+student_00_d64fbefcc1cf@cloudshell:~ (qwiklabs-gcp-01-b4dca281b24b)$ gcloud compute networks create privatenet --subnet-mode=custom
+Created [https://www.googleapis.com/compute/v1/projects/qwiklabs-gcp-01-b4dca281b24b/global/networks/privatenet].
+NAME        SUBNET_MODE  BGP_ROUTING_MODE  IPV4_RANGE  GATEWAY_IPV4
+privatenet  CUSTOM       REGIONAL
+
+Instances on this network will not be reachable until firewall rules
+are created. As an example, you can allow all internal traffic between
+instances as well as SSH, RDP, and ICMP by running:
+
+$ gcloud compute firewall-rules create <FIREWALL_NAME> --network privatenet --allow tcp,udp,icmp --source-ranges <IP_RANGE>
+$ gcloud compute firewall-rules create <FIREWALL_NAME> --network privatenet --allow tcp:22,tcp:3389,icmp
+
+student_00_d64fbefcc1cf@cloudshell:~ (qwiklabs-gcp-01-b4dca281b24b)$ gcloud compute networks create privatenet --subnet-mode=custom
+ERROR: (gcloud.compute.networks.create) Could not fetch resource:
+ - The resource 'projects/qwiklabs-gcp-01-b4dca281b24b/global/networks/privatenet' already exists
+
+student_00_d64fbefcc1cf@cloudshell:~ (qwiklabs-gcp-01-b4dca281b24b)$ gcloud compute networks subnets create privatesubnet-us --network=privatenet --region=us-central1 --range=172.16.0.0/24
+Created [https://www.googleapis.com/compute/v1/projects/qwiklabs-gcp-01-b4dca281b24b/regions/us-central1/subnetworks/privatesubnet-us].
+NAME              REGION       NETWORK     RANGE          STACK_TYPE  IPV6_ACCESS_TYPE  IPV6_CIDR_RANGE  EXTERNAL_IPV6_CIDR_RANGE
+privatesubnet-us  us-central1  privatenet  172.16.0.0/24  IPV4_ONLY
+student_00_d64fbefcc1cf@cloudshell:~ (qwiklabs-gcp-01-b4dca281b24b)$ gcloud compute networks subnets create privatesubnet-eu --network=privatenet --region=europe-west4 --range=172.20.0.0/20
+Created [https://www.googleapis.com/compute/v1/projects/qwiklabs-gcp-01-b4dca281b24b/regions/europe-west4/subnetworks/privatesubnet-eu].
+NAME              REGION        NETWORK     RANGE          STACK_TYPE  IPV6_ACCESS_TYPE  IPV6_CIDR_RANGE  EXTERNAL_IPV6_CIDR_RANGE
+privatesubnet-eu  europe-west4  privatenet  172.20.0.0/20  IPV4_ONLY
+student_00_d64fbefcc1cf@cloudshell:~ (qwiklabs-gcp-01-b4dca281b24b)$ gcloud compute networks list
+NAME           SUBNET_MODE  BGP_ROUTING_MODE  IPV4_RANGE  GATEWAY_IPV4
+default        AUTO         REGIONAL
+managementnet  CUSTOM       REGIONAL
+mynetwork      AUTO         REGIONAL
+privatenet     CUSTOM       REGIONAL
+student_00_d64fbefcc1cf@cloudshell:~ (qwiklabs-gcp-01-b4dca281b24b)$ gcloud compute networks subnets list --sort-by=NETWORK
+NAME                 REGION                   NETWORK        RANGE          STACK_TYPE  IPV6_ACCESS_TYPE  IPV6_CIDR_RANGE EXTERNAL_IPV6_CIDR_RANGE
+default              us-central1              default        10.128.0.0/20  IPV4_ONLY
+default              europe-west1             default        10.132.0.0/20  IPV4_ONLY
+default              us-west1                 default        10.138.0.0/20  IPV4_ONLY
+default              asia-east1               default        10.140.0.0/20  IPV4_ONLY
+default              us-east1                 default        10.142.0.0/20  IPV4_ONLY
+default              asia-northeast1          default        10.146.0.0/20  IPV4_ONLY
+default              asia-southeast1          default        10.148.0.0/20  IPV4_ONLY
+default              us-east4                 default        10.150.0.0/20  IPV4_ONLY
+default              australia-southeast1     default        10.152.0.0/20  IPV4_ONLY
+default              europe-west2             default        10.154.0.0/20  IPV4_ONLY
+default              europe-west3             default        10.156.0.0/20  IPV4_ONLY
+default              southamerica-east1       default        10.158.0.0/20  IPV4_ONLY
+default              asia-south1              default        10.160.0.0/20  IPV4_ONLY
+default              northamerica-northeast1  default        10.162.0.0/20  IPV4_ONLY
+default              europe-west4             default        10.164.0.0/20  IPV4_ONLY
+default              europe-north1            default        10.166.0.0/20  IPV4_ONLY
+default              us-west2                 default        10.168.0.0/20  IPV4_ONLY
+default              asia-east2               default        10.170.0.0/20  IPV4_ONLY
+default              europe-west6             default        10.172.0.0/20  IPV4_ONLY
+default              asia-northeast2          default        10.174.0.0/20  IPV4_ONLY
+default              asia-northeast3          default        10.178.0.0/20  IPV4_ONLY
+default              us-west3                 default        10.180.0.0/20  IPV4_ONLY
+default              us-west4                 default        10.182.0.0/20  IPV4_ONLY
+default              asia-southeast2          default        10.184.0.0/20  IPV4_ONLY
+default              europe-central2          default        10.186.0.0/20  IPV4_ONLY
+default              northamerica-northeast2  default        10.188.0.0/20  IPV4_ONLY
+default              asia-south2              default        10.190.0.0/20  IPV4_ONLY
+default              australia-southeast2     default        10.192.0.0/20  IPV4_ONLY
+managementsubnet-us  us-central1              managementnet  10.130.0.0/20  IPV4_ONLY
+mynetwork            us-central1              mynetwork      10.128.0.0/20  IPV4_ONLY
+mynetwork            europe-west1             mynetwork      10.132.0.0/20  IPV4_ONLY
+mynetwork            us-west1                 mynetwork      10.138.0.0/20  IPV4_ONLY
+mynetwork            asia-east1               mynetwork      10.140.0.0/20  IPV4_ONLY
+mynetwork            us-east1                 mynetwork      10.142.0.0/20  IPV4_ONLY
+mynetwork            asia-northeast1          mynetwork      10.146.0.0/20  IPV4_ONLY
+mynetwork            asia-southeast1          mynetwork      10.148.0.0/20  IPV4_ONLY
+mynetwork            us-east4                 mynetwork      10.150.0.0/20  IPV4_ONLY
+mynetwork            australia-southeast1     mynetwork      10.152.0.0/20  IPV4_ONLY
+mynetwork            europe-west2             mynetwork      10.154.0.0/20  IPV4_ONLY
+mynetwork            europe-west3             mynetwork      10.156.0.0/20  IPV4_ONLY
+mynetwork            southamerica-east1       mynetwork      10.158.0.0/20  IPV4_ONLY
+mynetwork            asia-south1              mynetwork      10.160.0.0/20  IPV4_ONLY
+mynetwork            northamerica-northeast1  mynetwork      10.162.0.0/20  IPV4_ONLY
+mynetwork            europe-west4             mynetwork      10.164.0.0/20  IPV4_ONLY
+mynetwork            europe-north1            mynetwork      10.166.0.0/20  IPV4_ONLY
+mynetwork            us-west2                 mynetwork      10.168.0.0/20  IPV4_ONLY
+mynetwork            asia-east2               mynetwork      10.170.0.0/20  IPV4_ONLY
+mynetwork            europe-west6             mynetwork      10.172.0.0/20  IPV4_ONLY
+mynetwork            asia-northeast2          mynetwork      10.174.0.0/20  IPV4_ONLY
+mynetwork            asia-northeast3          mynetwork      10.178.0.0/20  IPV4_ONLY
+mynetwork            us-west3                 mynetwork      10.180.0.0/20  IPV4_ONLY
+mynetwork            us-west4                 mynetwork      10.182.0.0/20  IPV4_ONLY
+mynetwork            asia-southeast2          mynetwork      10.184.0.0/20  IPV4_ONLY
+mynetwork            europe-central2          mynetwork      10.186.0.0/20  IPV4_ONLY
+mynetwork            northamerica-northeast2  mynetwork      10.188.0.0/20  IPV4_ONLY
+mynetwork            asia-south2              mynetwork      10.190.0.0/20  IPV4_ONLY
+mynetwork            australia-southeast2     mynetwork      10.192.0.0/20  IPV4_ONLY
+privatesubnet-us     us-central1              privatenet     172.16.0.0/24  IPV4_ONLY
+privatesubnet-eu     europe-west4             privatenet     172.20.0.0/20  IPV4_ONLY
+student_00_d64fbefcc1cf@cloudshell:~ (qwiklabs-gcp-01-b4dca281b24b)$
+student_00_d64fbefcc1cf@cloudshell:~ (qwiklabs-gcp-01-b4dca281b24b)$
+student_00_d64fbefcc1cf@cloudshell:~ (qwiklabs-gcp-01-b4dca281b24b)$ gcloud compute firewall-rules create privatenet-allow-icmp-ssh-rdp --direction=INGRESS --priority=1000 --network=privatenet --action=ALLOW --rules=icmp,tcp:22,tcp:3389 --source-ranges=0.0.0.0/0
+Creating firewall...⠹Created [https://www.googleapis.com/compute/v1/projects/qwiklabs-gcp-01-b4dca281b24b/global/firewalls/privatenet-allow-icmp-ssh-rdp].
+Creating firewall...done.
+NAME                           NETWORK     DIRECTION  PRIORITY  ALLOW                 DENY  DISABLED
+privatenet-allow-icmp-ssh-rdp  privatenet  INGRESS    1000      icmp,tcp:22,tcp:3389        False
+student_00_d64fbefcc1cf@cloudshell:~ (qwiklabs-gcp-01-b4dca281b24b)$ gcloud compute firewall-rules list --sort-by=NETWORK
+NAME                              NETWORK        DIRECTION  PRIORITY  ALLOW                         DENY  DISABLED
+default-allow-icmp                default        INGRESS    65534     icmp                                False
+default-allow-internal            default        INGRESS    65534     tcp:0-65535,udp:0-65535,icmp        False
+default-allow-rdp                 default        INGRESS    65534     tcp:3389                            False
+default-allow-ssh                 default        INGRESS    65534     tcp:22                              False
+managementnet-allow-icmp-ssh-rdp  managementnet  INGRESS    1000      tcp:22,tcp:3389,icmp                False
+mynetwork-allow-icmp              mynetwork      INGRESS    1000      icmp                                False
+mynetwork-allow-rdp               mynetwork      INGRESS    1000      tcp:3389                            False
+mynetwork-allow-ssh               mynetwork      INGRESS    1000      tcp:22                              False
+privatenet-allow-icmp-ssh-rdp     privatenet     INGRESS    1000      icmp,tcp:22,tcp:3389                False
+
+To show all fields of the firewall, please show in JSON format: --format=json
+To show all fields in table format, please see the examples in --help.
+
+student_00_d64fbefcc1cf@cloudshell:~ (qwiklabs-gcp-01-b4dca281b24b)$ gcloud compute instances create privatenet-us-vm --zone=us-central1-f --machine-type=n1-standard-1 --subnet=privatesubnet-us
+Created [https://www.googleapis.com/compute/v1/projects/qwiklabs-gcp-01-b4dca281b24b/zones/us-central1-f/instances/privatenet-us-vm].
+NAME              ZONE           MACHINE_TYPE   PREEMPTIBLE  INTERNAL_IP  EXTERNAL_IP    STATUS
+privatenet-us-vm  us-central1-f  n1-standard-1               172.16.0.2   34.72.251.215  RUNNING
+student_00_d64fbefcc1cf@cloudshell:~ (qwiklabs-gcp-01-b4dca281b24b)$ gcloud compute instances list --sort-by=ZONE
+NAME                 ZONE            MACHINE_TYPE   PREEMPTIBLE  INTERNAL_IP  EXTERNAL_IP     STATUS
+mynet-eu-vm          europe-west4-c  n1-standard-1               10.164.0.2   34.141.128.99   RUNNING
+managementnet-us-vm  us-central1-f   n1-standard-1               10.130.0.2   35.225.100.196  RUNNING
+mynet-us-vm          us-central1-f   n1-standard-1               10.128.0.2   34.136.156.4    RUNNING
+privatenet-us-vm     us-central1-f   n1-standard-1               172.16.0.2   34.72.251.215   RUNNING
+student_00_d64fbefcc1cf@cloudshell:~ (qwiklabs-gcp-01-b4dca281b24b)$ # 35.225.100.196 us
+student_00_d64fbefcc1cf@cloudshell:~ (qwiklabs-gcp-01-b4dca281b24b)$ 34.141.128.99 eu
+-bash: 34.141.128.99: command not found
+student_00_d64fbefcc1cf@cloudshell:~ (qwiklabs-gcp-01-b4dca281b24b)$ gcloud compute instances list --sort-by=ZONE
+NAME                 ZONE            MACHINE_TYPE   PREEMPTIBLE  INTERNAL_IP                       EXTERNAL_IP                               STATUS
+mynet-eu-vm          europe-west4-c  n1-standard-1               10.164.0.2                        34.141.128.99                             RUNNING
+managementnet-us-vm  us-central1-f   n1-standard-1               10.130.0.2                        35.225.100.196                            RUNNING
+mynet-us-vm          us-central1-f   n1-standard-1               10.128.0.2                        34.136.156.4                              RUNNING
+privatenet-us-vm     us-central1-f   n1-standard-1               172.16.0.2                        34.72.251.215                             RUNNING
+vm-appliance         us-central1-f   n1-standard-4               172.16.0.3,10.130.0.3,10.128.0.3  35.193.113.53,34.136.23.87,35.192.218.88  RUNNING
+student_00_d64fbefcc1cf@cloudshell:~ (qwiklabs-gcp-01-b4dca281b24b)$
+
+-----
+64 bytes from privatenet-us-vm.us-central1-f.c.qwiklabs-gcp-01-b4dca281b24b.internal (172.16.0.2): icmp_seq=1 ttl=6
+4 time=1.06 ms
+64 bytes from privatenet-us-vm.us-central1-f.c.qwiklabs-gcp-01-b4dca281b24b.internal (172.16.0.2): icmp_seq=2 ttl=6
+4 time=0.256 ms
+64 bytes from privatenet-us-vm.us-central1-f.c.qwiklabs-gcp-01-b4dca281b24b.internal (172.16.0.2): icmp_seq=3 ttl=6
+4 time=0.264 ms
+--- privatenet-us-vm.us-central1-f.c.qwiklabs-gcp-01-b4dca281b24b.internal ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 25ms
+rtt min/avg/max/mdev = 0.256/0.525/1.056/0.375 ms
+student-00-d64fbefcc1cf@vm-appliance:~$ ping -c 3 10.130.0.2
+PING 10.130.0.2 (10.130.0.2) 56(84) bytes of data.
+64 bytes from 10.130.0.2: icmp_seq=1 ttl=64 time=1.75 ms
+64 bytes from 10.130.0.2: icmp_seq=2 ttl=64 time=0.253 ms
+64 bytes from 10.130.0.2: icmp_seq=3 ttl=64 time=0.225 ms
+--- 10.130.0.2 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 36ms
+rtt min/avg/max/mdev = 0.225/0.743/1.751/0.712 ms
+student-00-d64fbefcc1cf@vm-appliance:~$ ping -c 3 10.128.0.2
+PING 10.128.0.2 (10.128.0.2) 56(84) bytes of data.
+64 bytes from 10.128.0.2: icmp_seq=1 ttl=64 time=2.29 ms
+64 bytes from 10.128.0.2: icmp_seq=2 ttl=64 time=0.240 ms
+64 bytes from 10.128.0.2: icmp_seq=3 ttl=64 time=0.311 ms
+--- 10.128.0.2 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 20ms
+rtt min/avg/max/mdev = 0.240/0.948/2.293/0.951 ms
+student-00-d64fbefcc1cf@vm-appliance:~$ ping -c 3 10.164.0.2
+PING 10.164.0.2 (10.164.0.2) 56(84) bytes of data.
+--- 10.164.0.2 ping statistics ---
+3 packets transmitted, 0 received, 100% packet loss, time 44ms
+student-00-d64fbefcc1cf@vm-appliance:~$ ip route
+default via 172.16.0.1 dev ens4 
+10.128.0.0/20 via 10.128.0.1 dev ens6 
+10.128.0.1 dev ens6 scope link 
+10.130.0.0/20 via 10.130.0.1 dev ens5 
+10.130.0.1 dev ens5 scope link 
+172.16.0.0/24 via 172.16.0.1 dev ens4 
+172.16.0.1 dev ens4 scope link 
+student-00-d64fbefcc1cf@vm-appliance:~$ 
+------
+
+--- 34.141.128.99 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2003ms
+rtt min/avg/max/mdev = 102.701/102.849/102.944/0.282 ms
+student-00-d64fbefcc1cf@mynet-us-vm:~$ ping -c 3 35.225.100.196
+PING 35.225.100.196 (35.225.100.196) 56(84) bytes of data.
+64 bytes from 35.225.100.196: icmp_seq=1 ttl=61 time=1.62 ms
+64 bytes from 35.225.100.196: icmp_seq=2 ttl=61 time=1.73 ms
+64 bytes from 35.225.100.196: icmp_seq=3 ttl=61 time=1.70 ms
+--- 35.225.100.196 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2003ms
+rtt min/avg/max/mdev = 1.626/1.688/1.737/0.057 ms
+student-00-d64fbefcc1cf@mynet-us-vm:~$ ping -c 3 34.72.251.215
+PING 34.72.251.215 (34.72.251.215) 56(84) bytes of data.
+64 bytes from 34.72.251.215: icmp_seq=1 ttl=61 time=2.49 ms
+64 bytes from 34.72.251.215: icmp_seq=2 ttl=61 time=1.92 ms
+64 bytes from 34.72.251.215: icmp_seq=3 ttl=61 time=1.87 ms
+--- 34.72.251.215 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2003ms
+rtt min/avg/max/mdev = 1.871/2.097/2.499/0.284 ms
+student-00-d64fbefcc1cf@mynet-us-vm:~$ ping -c 3 10.164.0.2
+PING 10.164.0.2 (10.164.0.2) 56(84) bytes of data.
+64 bytes from 10.164.0.2: icmp_seq=1 ttl=64 time=110 ms
+64 bytes from 10.164.0.2: icmp_seq=2 ttl=64 time=108 ms
+64 bytes from 10.164.0.2: icmp_seq=3 ttl=64 time=108 ms
+--- 10.164.0.2 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2002ms
+rtt min/avg/max/mdev = 108.753/109.300/110.343/0.785 ms
+student-00-d64fbefcc1cf@mynet-us-vm:~$ ping -c 3 10.130.0.2
+PING 10.130.0.2 (10.130.0.2) 56(84) bytes of data.
+--- 10.130.0.2 ping statistics ---
+3 packets transmitted, 0 received, 100% packet loss, time 2028ms
+student-00-d64fbefcc1cf@mynet-us-vm:~$ ping -c 3 172.16.0.2
+PING 172.16.0.2 (172.16.0.2) 56(84) bytes of data.
+--- 172.16.0.2 ping statistics ---
+3 packets transmitted, 0 received, 100% packet loss, time 2034ms
+student-00-d64fbefcc1cf@mynet-us-vm:~$ 
+----
