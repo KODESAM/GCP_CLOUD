@@ -5,14 +5,23 @@ Since you are deploying an existing website, you just need to clone the source, 
 
 Run the following commands to clone the git repo to your Cloud Shell instance and change to the appropriate directory. You will also install the NodeJS dependencies so you can test the application before deploying:
 
+```
+
 git clone https://github.com/googlecodelabs/monolith-to-microservices.git
+
+```
+```
 cd ~/monolith-to-microservices
 ./setup.sh
 
+```
 Test your application by running the following command to start the web server:
 
+```
 cd ~/monolith-to-microservices/monolith
 npm start
+
+```
 Output:
 
 Monolith listening on port 8080!
@@ -21,35 +30,46 @@ Preview your application by clicking the web preview icon and selecting Preview 
 Cloud Build will compress the files from the directory and move them to a Cloud Storage bucket. The build process will then take all the files from the bucket and use the Dockerfile, which is present in the same directory, to run the Docker build process. Since you specified the --tag flag with the host as gcr.io for the Docker image, the resulting Docker image will be pushed to Container Registry.
 
 First run the following command to enable the Cloud Build API:
-
+```
 gcloud services enable cloudbuild.googleapis.com
+```
+
 After the API is enabled, run the following command to start the build process:
 
+```
 gcloud builds submit --tag gcr.io/${GOOGLE_CLOUD_PROJECT}/monolith:1.0.0 .
 
+```
 Command-Line
 You will deploy the image that was built earlier, and choose the managed version of Cloud Run by specifying --platform managed.
 
 First you need to enable the Cloud Run API. Run the following command to enable it:
+```
 
 gcloud services enable run.googleapis.com
+
+```
 Run the following command to deploy your application:
 
+```
 gcloud run deploy --image=gcr.io/${GOOGLE_CLOUD_PROJECT}/monolith:1.0.0 --platform managed
+
+```
 Accept the default suggested service name (it will be "monolith") by pressing Enter.
 
 Specify which region you'd like to run in. Type the number for the region closest to you.
 
 Verify deployment
 To verify the deployment was created successfully, run the following command:
-
+```
 gcloud run services list
+
+```
 It may take a few moments for the pod status to be Running.
 
 Type "1" to choose the first option: [1] Cloud Run (fully managed)
 
 Output:
-
 
 SERVICE   REGION    URL  LAST DEPLOYED BY          LAST DEPLOYED AT
 ✔  monolith  us-east1 <your url>  <your email>  2019-09-16T21:07:38.267Z
@@ -60,7 +80,10 @@ By default, a Cloud Run application will have a concurrency value of 80, meaning
 
 Re-deploy the same container image with a concurrency value of 1 (just for testing), and see what happens:
 
+```
 gcloud run deploy --image=gcr.io/${GOOGLE_CLOUD_PROJECT}/monolith:1.0.0 --platform managed --concurrency 1
+    
+```
 Answer the subsequent questions just as you did the first time. Once the command is successful, check the Console to see the result.
 
 To see the details, from the Navigation menu, click on _Cloud Run, then click on the monolith service :
@@ -70,9 +93,14 @@ Next, restore the original concurrency without re-deploying.
 You could set the concurrency value back to the default of "80", or you could just set the value to "0", which will remove any concurrency restrictions and set it to the default max (which happens to be 80).
 
 Run the following command from Cloud Shell to update the current revision:
+    
+```
 
 gcloud run deploy --image=gcr.io/${GOOGLE_CLOUD_PROJECT}/monolith:1.0.0 --platform managed --concurrency 80
+
+```    
 Answer the subsequent questions just as you have before.
+    
 
 You will notice that another revision has been created, that traffic has now been redirected, and that the concurrency is back up to 80
 
@@ -82,12 +110,17 @@ Scenario: Your marketing team has asked you to change the homepage for your site
 Task: You will add some text to the homepage to make the marketing team happy! It looks like one of our developers already created the changes with the file name index.js.new. You can just copy this file to index.js and your changes should be reflected. Follow the instructions below to make the appropriate changes.
 
 Run the following commands to copy the updated file to the correct file name and then print its contents to verify the changes:
+    
+```
 
 cd ~/monolith-to-microservices/react-app/src/pages/Home
 mv index.js.new index.js
 cat ~/monolith-to-microservices/react-app/src/pages/Home/index.js
+    
+```
 The resulting code should look like this:
 
+```
 /*
 Copyright 2019 Google LLC
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -132,22 +165,34 @@ export default function Home() {
     </div>
   );
 }
+
+```
 You updated the React components, but you need to build the React app to generate the static files.
 
 Run the following command to build the React app and copy it into the monolith public directory:
-
+```
+    
 cd ~/monolith-to-microservices/react-app
 npm run build:monolith
+    
+```
 Now that the code is updated, rebuild the Docker container and publish it to Container Registry. You can use the same command as before, except this time you will update the version label.
 
 Run the following command to trigger a new Cloud Build with an updated image version of 2.0.0:
 
+```
 cd ~/monolith-to-microservices/monolith
+
+```
 Optional
 
 #Feel free to test your application
+    
+```
 npm start
 gcloud builds submit --tag gcr.io/${GOOGLE_CLOUD_PROJECT}/monolith:2.0.0 .
+    
+```
 In the next section you will use this image to update your application with zero downtime.
 
 Cloud Run treats each deployment as a new Revision which will first be brought online, then have traffic redirected to it. By default the latest revision will be assigned 100% of the inbound traffic for a service. It is possible to use "Routes" to allocate different percentages of traffic to different revisions within a service.
@@ -155,13 +200,20 @@ Cloud Run treats each deployment as a new Revision which will first be brought o
 Follow the instructions below to update your website.
 
 From Cloud Shell, re-deploy the service to update the image to a new version with the following command:
+    
+```
 
 gcloud run deploy --image=gcr.io/${GOOGLE_CLOUD_PROJECT}/monolith:2.0.0 --platform managed
 
-erify Deployment
+```
+verify Deployment
 Validate that your deployment updated by running the following command:
 
+```
+
 gcloud run services describe monolith --platform managed
+    
+```
 Type in the number for the region you've been using.
 
 Output:
@@ -183,23 +235,42 @@ Last updated on 2020-02-20T20:26:56.049Z by student-03-e32055b0be3a@qwiklabs.net
 
 Run the following command to list the services and view the IP address:
 
+```
 gcloud beta run services list
 
+```
 Cleanup
 When you end this lab all of the resources you used will be destroyed. It's good to know how to delete resources so you can do so in your own environment.
 
 Run the following to delete Container Registry images:
 
+
 # Delete the container image for version 1.0.0 of our monolith
+
+```    
 gcloud container images delete gcr.io/${GOOGLE_CLOUD_PROJECT}/monolith:1.0.0 --quiet
+    
+```
 # Delete the container image for version 2.0.0 of our monolith
+    
+```
 gcloud container images delete gcr.io/${GOOGLE_CLOUD_PROJECT}/monolith:2.0.0 --quiet
+    
+```
 Run the following to delete Cloud Build artifacts from Cloud Storage:
 
 # The following command will take all source archives from all builds and delete them from cloud storage
 # Run this command to print all sources:
-# gcloud builds list | awk 'NR > 1 {print $4}'
+
+```    
+gcloud builds list | awk 'NR > 1 {print $4}'
 gcloud builds list | awk 'NR > 1 {print $4}' | while read line; do gsutil rm $line; done
+    
+```
 Finally, delete Cloud Run service:
+    
+```
 
 gcloud beta run services delete monolith --platform managed
+    
+```
