@@ -1,6 +1,7 @@
-Hosting a Web App on Google Cloud Using Compute Engine
+###   Hosting a Web App on Google Cloud Using Compute Engine  ###
 
-Overview
+ ### Overview ###
+ 
 There are many ways to deploy web sites within Google Cloud with each solution offering different features, capabilities, and levels of control. Compute Engine offers a deep level of control over the infrastructure used to run a web site, but also requires a little more operational management compared to solutions like Google Kubernetes Engines (GKE), App Engine, or others. With Compute Engine, you have fine-grained control of aspects of the infrastructure, including the virtual machines, load balancers, and more. In this lab you will deploy a sample application, the "Fancy Store" ecommerce website, to show how a website can be deployed and scaled easily with Compute Engine.
 
 What you'll learn
@@ -61,7 +62,6 @@ Cloud Shell icon
 
 Click Continue.
 
-cloudshell_continue.png
 
 It takes a few moments to provision and connect to the environment. When you are connected, you are already authenticated, and the project is set to your PROJECT_ID. For example:
 
@@ -71,9 +71,11 @@ gcloud is the command-line tool for Google Cloud. It comes pre-installed on Clou
 
 You can list the active account name with this command:
 
- gcloud auth list
-(Output)
+```
 
+ gcloud auth list
+
+```
 Credentialed accounts:
  - <myaccount>@<mydomain>.com (active)
 (Example output)
@@ -81,8 +83,10 @@ Credentialed accounts:
 Credentialed accounts:
  - google1623327_student@qwiklabs.net
 You can list the project ID with this command:
-
+```
 gcloud config list project
+
+```
 (Output)
 
 [core]
@@ -93,8 +97,10 @@ project = <project_ID>
 project = qwiklabs-gcp-44776a13dea667a6
 For full documentation of gcloud see the gcloud command-line tool overview.
 Set the default zone and project configuration:
-
+```
 gcloud config set compute/zone us-central1-f
+
+```
 Learn more in the Regions & Zones documentation.
 
 When you run gcloud on your own machine, the config settings are persisted across sessions. But in Cloud Shell, you need to set this for every new session or reconnection.
@@ -102,33 +108,48 @@ When you run gcloud on your own machine, the config settings are persisted acros
 Enable Compute Engine API
 Next, enable the Compute Engine API. Execute the following to enable the Compute Engine API:
 
+```
 gcloud services enable compute.googleapis.com
+
+```
 Create Cloud Storage bucket
 You will use a Cloud Storage bucket to house your built code as well as your startup scripts.
 
 From within Cloud Shell, execute the following to create a new Cloud Storage bucket:
 
+```
 gsutil mb gs://fancy-store-$DEVSHELL_PROJECT_ID
+
+```
 Use of the $DEVSHELL_PROJECT_ID environment variable within Cloud Shell is to help ensure the names of objects are unique. Since all Project IDs within Google Cloud must be unique, appending the Project ID should make other names unique as well.
 
-Click Check my progress to verify the objective.
-Create Cloud Storage bucket
-Assessment completed!
+
+Create Cloud Storage bucket Assessment completed!
 
 Clone source repository
+
 You will be using the existing Fancy Store ecommerce website based on the monolith-to-microservices repository as the basis for your website. You will clone the source code so you can focus on the aspects of deploying to Compute Engine. Later on in this lab, you will perform a small update to the code to demonstrate the simplicity of updating on Compute Engine.
 
+```
 git clone https://github.com/googlecodelabs/monolith-to-microservices.git
 cd ~/monolith-to-microservices
+
+```
 Run the initial build of the code to allow the application to run locally:
 
+```
 ./setup.sh
+
+```
 It will take a few minutes for this script to finish.
 
 Once completed, run the following to test the application, switch to the microservices directory, and start the web server:
 
+```
 cd microservices
 npm start
+
+```
 You should see the following output:
 
 Products microservice listening on port 8082!
@@ -168,7 +189,7 @@ Navigate to the monolith-to-microservices folder.
 Click on File > New File and create a file called startup-script.sh
 
 Add the following code to the file. You will edit some of the code after it's added:
-
+```
 #!/bin/bash
 # Install logging monitor. The monitor will automatically pick up logs sent to
 # syslog.
@@ -203,11 +224,19 @@ environment=HOME="/home/nodeapp",USER="nodeapp",NODE_ENV="production"
 stdout_logfile=syslog
 stderr_logfile=syslog
 EOF
+
+```
+
+```
 supervisorctl reread
 supervisorctl update
-Find the text [DEVSHELL_PROJECT_ID] in the file and replace it with the output from the following command:
 
+```
+Find the text [DEVSHELL_PROJECT_ID] in the file and replace it with the output from the following command:
+```
 echo $DEVSHELL_PROJECT_ID
+
+```
 Example output:
 
 qwiklabs-gcp-123456789xyz
@@ -227,8 +256,10 @@ Installs Node.js and Supervisor. Supervisor runs the app as a daemon.
 Clones the app's source code from Cloud Storage Bucket and installs dependencies.
 Configures Supervisor to run the app. Supervisor makes sure the app is restarted if it exits unexpectedly or is stopped by an admin or process. It also sends the app's stdout and stderr to syslog for the Logging agent to collect.
 Run the following to copy the startup-script.sh file into your bucket:
-
+```
 gsutil cp ~/monolith-to-microservices/startup-script.sh gs://fancy-store-$DEVSHELL_PROJECT_ID
+
+```
 It will now be accessible at: https://storage.googleapis.com/[BUCKET_NAME]/startup-script.sh.
 
 [BUCKET_NAME] represents the name of the Cloud Storage bucket. This will only be viewable by authorized users and service accounts by default, so inaccessible through a web browser. Compute Engine instances will automatically be able to access this through their service account.
@@ -239,15 +270,16 @@ When instances launch, they pull code from the Cloud Storage bucket, so you can 
 You could also code this to pull environment variables from elsewhere, but for demonstration purposes this is a simple method to handle configuration. In production, environment variables would likely be stored outside of the code.
 
 Copy the cloned code into your bucket:
-
+```
 cd ~
 rm -rf monolith-to-microservices/*/node_modules
 gsutil -m cp -r monolith-to-microservices gs://fancy-store-$DEVSHELL_PROJECT_ID/
+
+```
 The node_modules dependencies directories are deleted to ensure the copy is as fast and efficient as possible. These are recreated on the instances when they start up.
 
-Click Check my progress to verify the objective.
-Copy startup script and code to Cloud Storage bucket
-Assessment completed!
+
+Copy startup script and code to Cloud Storage bucket  Assessment completed!
 
 Deploy backend instance
 The first instance to be deployed will be the backend instance which will house the Orders and Products microservices.
@@ -256,18 +288,23 @@ In a production environment, you may want to separate each microservice into the
 
 Execute the following command to create an n1-standard-1 instance that is configured to use the startup script. It is tagged as a backend instance so you can apply specific firewall rules to it later:
 
+```
 gcloud compute instances create backend \
     --machine-type=n1-standard-1 \
     --tags=backend \
    --metadata=startup-script-url=https://storage.googleapis.com/fancy-store-$DEVSHELL_PROJECT_ID/startup-script.sh
+   
+```
 If you are asked to specify a zone, ensure a default zone was configured within the Set Up portion of this lab.
 
 Configure connection to backend
 Before you deploy the frontend of the application, you need to update the configuration to point to the backend you just deployed.
 
 Retrieve the external IP address of the backend with the following command, look under the EXTERNAL_IP tab for the backend instance:
-
+```
 gcloud compute instances list
+
+```
 Example output:
 
 NAME     ZONE           MACHINE_TYPE  PREEMPTIBLE  INTERNAL_IP  EXTERNAL_IP   STATUS
@@ -282,44 +319,57 @@ Edit the .env file to point to the External IP of the backend. [BACKEND_ADDRESS]
 
 In the .env file, replace localhost with your [BACKEND_ADDRESS]:
 
+```
 REACT_APP_ORDERS_URL=http://[BACKEND_ADDRESS]:8081/api/orders
 REACT_APP_PRODUCTS_URL=http://[BACKEND_ADDRESS]:8082/api/products
+
+```
 Save the file.
 
 Rebuild react-app, which will update the frontend code:
-
+```
 cd ~/monolith-to-microservices/react-app
 npm install && npm run-script build
-Then copy the application code into the Cloud Storage bucket:
 
+```
+Then copy the application code into the Cloud Storage bucket:
+```
 cd ~
 rm -rf monolith-to-microservices/*/node_modules
 gsutil -m cp -r monolith-to-microservices gs://fancy-store-$DEVSHELL_PROJECT_ID/
+
+```
 Deploy frontend instance
 Now that the code is configured, deploy the frontend instance.
 
 Execute the following to deploy the frontend instance with a similar command as before. This instance is tagged as frontend for firewall purposes:
-
+```
 gcloud compute instances create frontend \
     --machine-type=n1-standard-1 \
     --tags=frontend \
     --metadata=startup-script-url=https://storage.googleapis.com/fancy-store-$DEVSHELL_PROJECT_ID/startup-script.sh
+    
+```
 The deployment command and startup script is used with both the frontend and backend instances for simplicity, and because the code is configured to launch all microservices by default. As a result, all microservices run on both the frontend and backend in this sample. In a production environment you'd only run the microservices you need on each component.
 
 Configure Network
 Create firewall rules to allow access to port 8080 for the frontend, and ports 8081-8082 for the backend. These firewall commands use the tags assigned during instance creation for application:
-
+```
 gcloud compute firewall-rules create fw-fe \
     --allow tcp:8080 \
     --target-tags=frontend
 gcloud compute firewall-rules create fw-be \
     --allow tcp:8081-8082 \
     --target-tags=backend
+    
+```
 The website should now be fully functional.
 
 In order to navigate to the external IP of the frontend, you need to know the address. Run the following and look for the EXTERNAL_IP of the frontend instance:
-
+```
 gcloud compute instances list
+
+```
 Example output:
 
 NAME      ZONE           MACHINE_TYPE   PREEMPTIBLE  INTERNAL_IP  EXTERNAL_IP     STATUS
@@ -328,9 +378,10 @@ frontend  us-central1-f  n1-standard-1               10.128.0.3   35.223.110.167
 It may take a couple minutes for the instance to start and be configured.
 
 Wait 30 seconds, then execute the following to monitor for the application becoming ready, replacing FRONTEND_ADDRESS with the External IP for the frontend instance:
-
+```
 watch -n 2 curl http://[FRONTEND_ADDRESS]:8080
 
+```
 Once you see output similar to the following, the website should be ready..
 
 Press Ctrl+C to cancel the watch command
@@ -354,49 +405,65 @@ Before you can create a managed instance group, you have to first create an inst
 To create the instance template, use the existing instances you created previously.
 
 First, stop both instances:
-
+```
 gcloud compute instances stop frontend
 gcloud compute instances stop backend
+
+```
 Then, create the instance template from each of the source instances:
 
+```
 gcloud compute instance-templates create fancy-fe \
     --source-instance=frontend
 gcloud compute instance-templates create fancy-be \
     --source-instance=backend
+    
+```
 Confirm the instance templates were created:
-
+```
 gcloud compute instance-templates list
+
+```
 Example output:
 
 NAME      MACHINE_TYPE  PREEMPTIBLE  CREATION_TIMESTAMP
 fancy-be  n1-standard-1                  2020-02-03T10:34:12.966-08:00
 fancy-fe  n1-standard-1                   2020-02-03T10:34:01.082-08:00
 With the instance templates created, delete the backend vm to save resource space:
-
+```
 gcloud compute instances delete backend
+
+```
 Type and enter y when prompted.
 
 Normally, you could delete the frontend vm as well, but you will use it to update the instance template later in the lab.
 
 Create managed instance group
 Next, create two managed instance groups, one for the frontend and one for the backend:
-
+```
 gcloud compute instance-groups managed create fancy-fe-mig \
     --base-instance-name fancy-fe \
     --size 2 \
     --template fancy-fe
+```
+```
 gcloud compute instance-groups managed create fancy-be-mig \
     --base-instance-name fancy-be \
     --size 2 \
     --template fancy-be
+    
+```
 These managed instance groups will use the instance templates and are configured for two instances each within each group to start. The instances are automatically named based on the base-instance-name specified with random characters appended.
 
 For your application, the frontend microservice runs on port 8080, and the backend microservice runs on port 8081 for orders and port 8082 for products:
-
+```
 gcloud compute instance-groups set-named-ports fancy-fe-mig \
     --named-ports frontend:8080
+```
+```
 gcloud compute instance-groups set-named-ports fancy-be-mig \
     --named-ports orders:8081,products:8082
+```
 Since these are non-standard ports, you specify named ports to identify these. Named ports are key:value pair metadata representing the service name and the port that it's running on. Named ports can be assigned to an instance group, which indicates that the service is available on all instances in the group. This information is used by the HTTP Load Balancing service that will be configured later.
 
 Configure autohealing
@@ -407,13 +474,15 @@ An autohealing policy relies on an application-based health check to verify that
 Note: Separate health checks for load balancing and for autohealing will be used. Health checks for load balancing can and should be more aggressive because these health checks determine whether an instance receives user traffic. You want to catch non-responsive instances quickly so you can redirect traffic if necessary. In contrast, health checking for autohealing causes Compute Engine to proactively replace failing instances, so this health check should be more conservative than a load balancing health check.
 
 Create a health check that repairs the instance if it returns "unhealthy" 3 consecutive times for the frontend and backend:
-
+```
 gcloud compute health-checks create http fancy-fe-hc \
     --port 8080 \
     --check-interval 30s \
     --healthy-threshold 1 \
     --timeout 10s \
     --unhealthy-threshold 3
+```
+```
 gcloud compute health-checks create http fancy-be-hc \
     --port 8081 \
     --request-path=/api/orders \
@@ -421,20 +490,26 @@ gcloud compute health-checks create http fancy-be-hc \
     --healthy-threshold 1 \
     --timeout 10s \
     --unhealthy-threshold 3
+```
 Create a firewall rule to allow the health check probes to connect to the microservices on ports 8080-8081:
-
+```
 gcloud compute firewall-rules create allow-health-check \
     --allow tcp:8080-8081 \
     --source-ranges 130.211.0.0/22,35.191.0.0/16 \
     --network default
+```
 Apply the health checks to their respective services:
-
+```
 gcloud compute instance-groups managed update fancy-fe-mig \
     --health-check fancy-fe-hc \
     --initial-delay 300
+```
+```
 gcloud compute instance-groups managed update fancy-be-mig \
     --health-check fancy-be-hc \
     --initial-delay 300
+    
+```
 It can take 15 minutes before autohealing begins monitoring instances in the group.
 
 Continue with the lab to allow some time for autohealing to monitor the instances in the group. You will simulate a failure to test the autohealing at the end of the lab.
@@ -458,7 +533,7 @@ Sessions between the load balancer and the instance can use the HTTP, HTTPS, or 
 For demonstration purposes in order to avoid SSL certificate complexity, use HTTP instead of HTTPS. For production, it is recommended to use HTTPS for encryption wherever possible.
 
 Create health checks that will be used to determine which instances are capable of serving traffic for each service:
-
+```
 gcloud compute http-health-checks create fancy-fe-frontend-hc \
   --request-path / \
   --port 8080
@@ -468,10 +543,12 @@ gcloud compute http-health-checks create fancy-be-orders-hc \
 gcloud compute http-health-checks create fancy-be-products-hc \
   --request-path /api/products \
   --port 8082
+  
+```
 These health checks are for the load balancer, and only handle directing traffic from the load balancer; they do not cause the managed instance groups to recreate instances.
 
 Create backend services that are the target for load-balanced traffic. The backend services will use the health checks and named ports you created:
-
+```
 gcloud compute backend-services create fancy-fe-frontend \
   --http-health-checks fancy-fe-frontend-hc \
   --port-name frontend \
@@ -484,8 +561,9 @@ gcloud compute backend-services create fancy-be-products \
   --http-health-checks fancy-be-products-hc \
   --port-name products \
   --global
+```
 Add the Load Balancer's backend services:
-
+```
 gcloud compute backend-services add-backend fancy-fe-frontend \
   --instance-group fancy-fe-mig \
   --instance-group-zone us-central1-f \
@@ -498,79 +576,97 @@ gcloud compute backend-services add-backend fancy-be-products \
   --instance-group fancy-be-mig \
   --instance-group-zone us-central1-f \
   --global
+  
+```
 Create a URL map. The URL map defines which URLs are directed to which backend services:
-
+```
 gcloud compute url-maps create fancy-map \
   --default-service fancy-fe-frontend
+```
 Create a path matcher to allow the /api/orders and /api/products paths to route to their respective services:
-
+```
 gcloud compute url-maps add-path-matcher fancy-map \
    --default-service fancy-fe-frontend \
    --path-matcher-name orders \
    --path-rules "/api/orders=fancy-be-orders,/api/products=fancy-be-products"
+   
+```
 Create the proxy which ties to the URL map:
-
+```
 gcloud compute target-http-proxies create fancy-proxy \
   --url-map fancy-map
+```
 Create a global forwarding rule that ties a public IP address and port to the proxy:
-
+```
 gcloud compute forwarding-rules create fancy-http-rule \
   --global \
   --target-http-proxy fancy-proxy \
   --ports 80
-
+```
 Create HTTP(S) load balancers Assessment completed!
 
 Update Configuration
 Now that you have a new static IP address, update the code on the frontend to point to this new address instead of the ephemeral address used earlier that pointed to the backend instance.
 
 In Cloud Shell, change to the react-app folder which houses the .env file that holds the configuration:
-
+```
 cd ~/monolith-to-microservices/react-app/
+```
 Find the IP address for the Load Balancer:
-
+```
 gcloud compute forwarding-rules list --global
+```
 Example output:
 
 NAME                    REGION  IP_ADDRESS     IP_PROTOCOL  TARGET
 fancy-http-rule          34.102.237.51  TCP          fancy-proxy
 Return to the Cloud Shell Editor and edit the .env file again to point to Public IP of Load Balancer. [LB_IP] represents the External IP address of the backend instance determined above.
-
+```
 REACT_APP_ORDERS_URL=http://[LB_IP]/api/orders
 REACT_APP_PRODUCTS_URL=http://[LB_IP]/api/products
+
+```
 The ports are removed in the new address because the load balancer is configured to handle this forwarding for you.
 
 Save the file.
 
 Rebuild react-app, which will update the frontend code:
-
+```
 cd ~/monolith-to-microservices/react-app
 npm install && npm run-script build
-Copy the application code into your bucket:
 
+```
+Copy the application code into your bucket:
+```
 cd ~
 rm -rf monolith-to-microservices/*/node_modules
 gsutil -m cp -r monolith-to-microservices gs://fancy-store-$DEVSHELL_PROJECT_ID/
+
+```
 Update the frontend instances
 Now that there is new code and configuration, you want the frontend instances within the managed instance group to pull the new code. Since your instances pull the code at startup, you can issue a rolling restart command:
-
+```
 gcloud compute instance-groups managed rolling-action replace fancy-fe-mig \
     --max-unavailable 100%
+```
 In this example of a rolling replace, you specifically state that all machines can be replaced immediately through the --max-unavailable parameter. Without this parameter, the command would keep an instance alive while restarting others to ensure availability. For testing purposes, you specify to replace all immediately for speed.
 
-Click Check my progress to verify the objective.
-Update the frontend instances
-Assessment completed!
+
+Update the frontend instances Assessment completed!
 
 Test the website
 Wait approximately 30 seconds after issues the rolling-action replace command in order to give the instances time to be processed, and then check the status of the managed instance group until instances appear in the list:
-
+```
 watch -n 2 gcloud compute instance-groups list-instances fancy-fe-mig
+
+```
 Once items appear in the list, exit the watch command by pressing Ctrl+C.
 
 Run the following to confirm the service is listed as HEALTHY:
-
+```
 watch -n 2 gcloud compute backend-services get-health fancy-fe-frontend --global
+
+```
 Wait until the 2 services are listed as HEALTHY.
 
 Example output:
@@ -593,9 +689,9 @@ If one instance encounters an issue and is UNHEALTHY it should automatically be 
 Once both items appear as HEALTHY on the list, exit the watch command by pressing Ctrl+C.
 
 The application will be accessible via http://[LB_IP] where [LB_IP] is the IP_ADDRESS specified for the Load Balancer, which can be found with the following command:
-
+```
 gcloud compute forwarding-rules list --global
-
+```
 You'll be checking the application later in the lab.
 
 Scaling Compute Engine
@@ -603,7 +699,7 @@ So far, you have created two managed instance groups with two instances each. Th
 
 Automatically Resize by Utilization
 To create the autoscaling policy, execute the following:
-
+```
 gcloud compute instance-groups managed set-autoscaling \
   fancy-fe-mig \
   --max-num-replicas 2 \
@@ -612,15 +708,19 @@ gcloud compute instance-groups managed set-autoscaling \
   fancy-be-mig \
   --max-num-replicas 2 \
   --target-load-balancing-utilization 0.60
+  
+```
 These commands create an autoscaler on the managed instance groups that automatically adds instances when utilization is above 60% utilization, and removes instances when the load balancer is below 60% utilization.
 
 Enable Content Delivery Network
 Another feature that can help with scaling is to enable a Content Delivery Network service, to provide caching for the frontend.
 
 Execute the following command on the frontend service:
-
+```
 gcloud compute backend-services update fancy-fe-frontend \
     --enable-cdn --global
+    
+```
 When a user requests content from the HTTP(S) load balancer, the request arrives at a Google Front End (GFE) which first looks in the Cloud CDN cache for a response to the user's request. If the GFE finds a cached response, the GFE sends the cached response to the user. This is called a cache hit.
 
 If the GFE can't find a cached response for the request, the GFE makes a request directly to the backend. If the response to this request is cacheable, the GFE stores the response in the Cloud CDN cache so that the cache can be used for subsequent requests.
@@ -637,20 +737,28 @@ Update the frontend instance, which acts as the basis for the instance template.
 Now modify the machine type of your instance template, by switching from the n1-standard-1 machine type into a custom machine type with 4 vCPU and 3840MiB RAM.
 
 Run the following command to modify the machine type of the frontend instance:
-
+```
 gcloud compute instances set-machine-type frontend --machine-type custom-4-3840
-Create the new Instance Template:
 
+```
+Create the new Instance Template:
+```
 gcloud compute instance-templates create fancy-fe-new \
     --source-instance=frontend \
     --source-instance-zone=us-central1-f
+    
+```
 Roll out the updated instance template to the Managed Instance Group:
-
+```
 gcloud compute instance-groups managed rolling-action start-update fancy-fe-mig \
     --version template=fancy-fe-new
+    
+```
 Wait 30 seconds then run the following to monitor the status of the update:
-
+```
 watch -n 2 gcloud compute instance-groups managed list-instances fancy-fe-mig
+
+```
 This will take a few moments.
 
 Once you have at least 1 instance in the following condition:
@@ -663,8 +771,10 @@ Copy the name of one of the machines listed for use in the next command.
 Ctrl+C to exit the watch process.
 
 Run the following to see if the virtual machine is using the new machine type (custom-4-3840), where [VM_NAME] is the newly created instance:
-
+```
 gcloud compute instances describe [VM_NAME] | grep machineType
+
+```
 Expected example output:
 
 machineType: https://www.googleapis.com/compute/v1/projects/project-name/zones/us-central1-f/machineTypes/custom-4-3840
@@ -674,14 +784,18 @@ Scenario: Your marketing team has asked you to change the homepage for your site
 Task: Add some text to the homepage to make the marketing team happy! It looks like one of the developers has already created the changes with the file name index.js.new. You can just copy this file to index.js and the changes should be reflected. Follow the instructions below to make the appropriate changes.
 
 Run the following commands to copy the updated file to the correct file name:
-
+```
 cd ~/monolith-to-microservices/react-app/src/pages/Home
 mv index.js.new index.js
+
+```
 Print the file contents to verify the changes:
-
+```
 cat ~/monolith-to-microservices/react-app/src/pages/Home/index.js
-The resulting code should look like this:
 
+```
+The resulting code should look like this:
+```
 /*
 Copyright 2019 Google LLC
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -726,35 +840,47 @@ export default function Home() {
     </div>
   );
 }
+
+```
 You updated the React components, but you need to build the React app to generate the static files.
 
 Run the following command to build the React app and copy it into the monolith public directory:
-
+```
 cd ~/monolith-to-microservices/react-app
 npm install && npm run-script build
-Then re-push this code to the bucket:
 
+```
+Then re-push this code to the bucket:
+```
 cd ~
 rm -rf monolith-to-microservices/*/node_modules
 gsutil -m cp -r monolith-to-microservices gs://fancy-store-$DEVSHELL_PROJECT_ID/
+
+```
 Push changes with rolling replacements
 Now force all instances to be replaced to pull the update:
-
+```
 gcloud compute instance-groups managed rolling-action replace fancy-fe-mig \
     --max-unavailable=100%
+    
+```
 In this example of a rolling replace, you specifically state that all machines can be replaced immediately through the --max-unavailable parameter. Without this parameter, the command would keep an instance alive while replacing others. For testing purposes, you specify to replace all immediately for speed. In production, leaving a buffer would allow the website to continue serving the website while updating.
 
 
 Update the website Assessment completed!
 
 Wait approximately 30 seconds after issuing the rolling-action replace command in order to give the instances time to be processed, and then check the status of the managed instance group until instances appear in the list:
-
+```
 watch -n 2 gcloud compute instance-groups list-instances fancy-fe-mig
+
+```
 Once items appear in the list, exit the watch command by pressing Ctrl+C.
 
 Run the following to confirm the service is listed as HEALTHY:
-
+```
 watch -n 2 gcloud compute backend-services get-health fancy-fe-frontend --global
+
+```
 Wait a few moments for both services to appear and become HEALTHY.
 
 Example output:
@@ -775,31 +901,40 @@ status:
 Once items appear in the list, exit the watch command by pressing Ctrl+C.
 
 Browse to the website via http://[LB_IP] where [LB_IP] is the IP_ADDRESS specified for the Load Balancer, which can be found with the following command:
-
+```
 gcloud compute forwarding-rules list --global
+
+```
 The new website changes should now be visible.
 
 Simulate Failure
 In order to confirm the health check works, log in to an instance and stop the services.
 
 To find an instance name, execute the following:
-
+```
 gcloud compute instance-groups list-instances fancy-fe-mig
-Copy an instance name, then run the following to secure shell into the instance, where INSTANCE_NAME is one of the instances from the list:
 
+```
+Copy an instance name, then run the following to secure shell into the instance, where INSTANCE_NAME is one of the instances from the list:
+```
 gcloud compute ssh [INSTANCE_NAME]
+
+```
 Type in "y" to confirm, and press Enter twice to not use a password.
 
 Within the instance, use supervisorctl to stop the application:
-
+```
 sudo supervisorctl stop nodeapp; sudo killall node
+
+```
 Exit the instance:
 
 exit
 Monitor the repair operations:
-
+```
 watch -n 2 gcloud compute operations list \
 --filter='operationType~compute.instances.repair.*'
+```
 This will take a few minutes to complete.
 
 Look for the following example output:
