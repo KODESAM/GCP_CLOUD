@@ -19,6 +19,7 @@ student_01_d8f47e91d77f@cloudshell:~ (qwiklabs-gcp-01-99ac96e9c528)$ gcloud serv
 ```
 student_01_d8f47e91d77f@cloudshell:~ (qwiklabs-gcp-01-99ac96e9c528)$ gcloud container clusters create fancy-cluster --num-nodes 3
 ```
+```
 WARNING: Starting in January 2021, clusters will use the Regular release channel by default when `--cluster-version`, `--release-channel`, `--no-enable-autoupgrade`, and `--no-enable-autorepair` flags are not specified.
 WARNING: Currently VPC-native is not the default mode during cluster creation. In the future, this will become the default mode and can be disabled using `--no-enable-ip-alias` flag. Use `--[no-]enable-ip-alias` flag to suppress this warning.
 WARNING: Starting with version 1.18, clusters will have shielded GKE nodes by default.
@@ -28,6 +29,8 @@ Creating cluster fancy-cluster in us-central1-f...done.
 Created [https://container.googleapis.com/v1/projects/qwiklabs-gcp-01-99ac96e9c528/zones/us-central1-f/clusters/fancy-cluster].
 To inspect the contents of your cluster, go to: https://console.cloud.google.com/kubernetes/workload_/gcloud/us-central1-f/fancy-cluster?project=qwiklabs-gcp-01-99ac96e9c528
 kubeconfig entry generated for fancy-cluster.
+```
+
 ```
 NAME           LOCATION       MASTER_VERSION   MASTER_IP     MACHINE_TYPE  NODE_VERSION     NUM_NODES  STATUS
 fancy-cluster  us-central1-f  1.20.8-gke.2100  34.67.79.206  e2-medium     1.20.8-gke.2100  3          RUNNING
@@ -47,6 +50,7 @@ student_01_d8f47e91d77f@cloudshell:~ (qwiklabs-gcp-01-99ac96e9c528)$ cd ~
 ```
 student_01_d8f47e91d77f@cloudshell:~ (qwiklabs-gcp-01-99ac96e9c528)$ git clone https://github.com/googlecodelabs/monolith-to-microservices.git
 ```
+```
 Cloning into 'monolith-to-microservices'...
 remote: Enumerating objects: 988, done.
 remote: Counting objects: 100% (52/52), done.
@@ -55,23 +59,26 @@ remote: Total 988 (delta 39), reused 0 (delta 0), pack-reused 936
 Receiving objects: 100% (988/988), 2.82 MiB | 12.65 MiB/s, done.
 Resolving deltas: 100% (440/440), done.
 ```
+```
 student_01_d8f47e91d77f@cloudshell:~ (qwiklabs-gcp-01-99ac96e9c528)$ cd ~/monolith-to-microservices
 ```
 ```
 student_01_d8f47e91d77f@cloudshell:~/monolith-to-microservices (qwiklabs-gcp-01-99ac96e9c528)$ ./setup.sh
+```
 ```
 Checking for required npm version...Completed.
 Installing monolith dependencies...Completed.
 Installing microservies dependencies...Completed.
 Installing React app dependencies...Completed.
 Building React app and placing into sub projects...Completed.
-
+```
 Script completed successfully!
 ```
 student_01_d8f47e91d77f@cloudshell:~/monolith-to-microservices (qwiklabs-gcp-01-99ac96e9c528)$ cd ~/monolith-to-microservices/monolith
 ```
 ```
 student_01_d8f47e91d77f@cloudshell:~/monolith-to-microservices/monolith (qwiklabs-gcp-01-99ac96e9c528)$ npm start
+```
 ```
 > monolith@1.0.0 start
 > node ./src/server.js
@@ -80,6 +87,7 @@ Monolith listening on port 8080!
 
 ^C
 ```
+```
 student_01_d8f47e91d77f@cloudshell:~/monolith-to-microservices/monolith (qwiklabs-gcp-01-99ac96e9c528)$ gcloud services enable cloudbuild.googleapis.com
 ```
 ```
@@ -87,6 +95,7 @@ student_01_d8f47e91d77f@cloudshell:~/monolith-to-microservices/monolith (qwiklab
 ```
 ```
 student_01_d8f47e91d77f@cloudshell:~/monolith-to-microservices/monolith (qwiklabs-gcp-01-99ac96e9c528)$ ls -l
+```
 ```
 total 60
 drwxr-xr-x  2 student_01_d8f47e91d77f student_01_d8f47e91d77f  4096 Sep  1 18:42 data
@@ -98,7 +107,9 @@ drwxr-xr-x 52 student_01_d8f47e91d77f student_01_d8f47e91d77f  4096 Sep  1 18:42
 drwxr-xr-x  3 student_01_d8f47e91d77f student_01_d8f47e91d77f  4096 Sep  1 18:44 public
 drwxr-xr-x  2 student_01_d8f47e91d77f student_01_d8f47e91d77f  4096 Sep  1 18:42 src
 ```
+```
 student_01_d8f47e91d77f@cloudshell:~/monolith-to-microservices/monolith (qwiklabs-gcp-01-99ac96e9c528)$ gcloud builds submit --tag gcr.io/${GOOGLE_CLOUD_PROJECT}/monolith:1.0.0 .
+```
 ```
 Creating temporary tarball archive of 33 file(s) totalling 2.4 MiB before compression.
 Uploading tarball of [.] to [gs://qwiklabs-gcp-01-99ac96e9c528_cloudbuild/source/1630522055.224441-49547fb3e3ee4198a1df4d0acebb414e.tgz]
@@ -234,6 +245,7 @@ DONE
 ID                                    CREATE_TIME                DURATION  SOURCE                                                                                                      IMAGES                                              STATUS
 529de535-f056-4980-9b98-c84420ea51af  2021-09-01T18:47:37+00:00  41S       gs://qwiklabs-gcp-01-99ac96e9c528_cloudbuild/source/1630522055.224441-49547fb3e3ee4198a1df4d0acebb414e.tgz  gcr.io/qwiklabs-gcp-01-99ac96e9c528/monolith:1.0.0  SUCCESS
 ```
+```
 student_01_d8f47e91d77f@cloudshell:~/monolith-to-microservices/monolith (qwiklabs-gcp-01-99ac96e9c528)$ kubectl create deployment monolith --image=gcr.io/${GOOGLE_CLOUD_PROJECT}/monolith:1.0.0
 ```
 deployment.apps/monolith created
@@ -355,6 +367,7 @@ export default function Home() {
 ```
 student_01_d8f47e91d77f@cloudshell:~/monolith-to-microservices/react-app/src/pages/Home (qwiklabs-gcp-01-99ac96e9c528)$ cd ~/monolith-to-microservices/react-apstudent_01_d8f47e91d77f@cloudshell:~/monolith-to-microservices/react-app (qwiklabs-gcp-01-99ac96e9c528)$ npm run build:monolith
 ```
+```          
 > frontend@0.1.0 build:monolith
 > env-cmd -f .env.monolith react-scripts build
 
@@ -393,12 +406,14 @@ Deleting stale folder: ../monolith/public
 Deleted stale destination folder: ../monolith/public
 Copying files from ./build to ../monolith/public
 Copied ./build to ../monolith/public successfully!
+```           
 ```
 student_01_d8f47e91d77f@cloudshell:~/monolith-to-microservices/react-app (qwiklabs-gcp-01-99ac96e9c528)$ cd ~/monolith-to-microservices/monolith
 ```
 ```
 student_01_d8f47e91d77f@cloudshell:~/monolith-to-microservices/monolith (qwiklabs-gcp-01-99ac96e9c528)$ gcloud builds submit --tag gcr.io/${GOOGLE_CLOUD_PROJECT}/monolith:2.0.0 .
 ```
+```           
 Creating temporary tarball archive of 33 file(s) totalling 2.4 MiB before compression.
 Uploading tarball of [.] to [gs://qwiklabs-gcp-01-99ac96e9c528_cloudbuild/source/1630522568.205373-a791bff0ea1b43cdb50f8bdce8ab5067.tgz]
 Created [https://cloudbuild.googleapis.com/v1/projects/qwiklabs-gcp-01-99ac96e9c528/locations/global/builds/1d3de4c0-40a7-4e51-a9a3-503d812d8121].
@@ -532,7 +547,9 @@ DONE
 ID                                    CREATE_TIME                DURATION  SOURCE                                                                                                      IMAGES                                              STATUS
 1d3de4c0-40a7-4e51-a9a3-503d812d8121  2021-09-01T18:56:09+00:00  42S       gs://qwiklabs-gcp-01-99ac96e9c528_cloudbuild/source/1630522568.205373-a791bff0ea1b43cdb50f8bdce8ab5067.tgz  gcr.io/qwiklabs-gcp-01-99ac96e9c528/monolith:2.0.0  SUCCESS
 ```
+```          
 student_01_d8f47e91d77f@cloudshell:~/monolith-to-microservices/monolith (qwiklabs-gcp-01-99ac96e9c528)$ gcloud builds submit --tag gcr.io/${GOOGLE_CLOUD_PROJECT}/monolith:2.0.0 .
+```
 ```
 Creating temporary tarball archive of 33 file(s) totalling 2.4 MiB before compression.
 Uploading tarball of [.] to [gs://qwiklabs-gcp-01-99ac96e9c528_cloudbuild/source/1630522631.97647-52da74efc91f43648f6772942dc532d7.tgz]
@@ -666,6 +683,7 @@ DONE
 ID                                    CREATE_TIME                DURATION  SOURCE                                                                                                     IMAGES                                              STATUS
 a87ba5bc-2f37-4619-a87d-332b1aa2da8e  2021-09-01T18:57:13+00:00  39S       gs://qwiklabs-gcp-01-99ac96e9c528_cloudbuild/source/1630522631.97647-52da74efc91f43648f6772942dc532d7.tgz  gcr.io/qwiklabs-gcp-01-99ac96e9c528/monolith:2.0.0  SUCCESS
 ```
+```
 student_01_d8f47e91d77f@cloudshell:~/monolith-to-microservices/monolith (qwiklabs-gcp-01-99ac96e9c528)$ kubectl set image deployment/monolith monolith=gcr.io/${GOOGLE_CLOUD_PROJECT}/monolith:2.0.0
 deployment.apps/monolith image updated
 ```
@@ -693,6 +711,7 @@ student_01_d8f47e91d77f@cloudshell:~ (qwiklabs-gcp-01-99ac96e9c528)$ rm -rf mono
 student_01_d8f47e91d77f@cloudshell:~ (qwiklabs-gcp-01-99ac96e9c528)$ # Delete the container image for version 1.0.0 of the monolith
 student_01_d8f47e91d77f@cloudshell:~ (qwiklabs-gcp-01-99ac96e9c528)$ gcloud container images delete gcr.io/${GOOGLE_CLOUD_PROJECT}/monolith:1.0.0 --quiet
 ```
+```
 Digests:
 - gcr.io/qwiklabs-gcp-01-99ac96e9c528/monolith@sha256:10d5b4bf3f458429a8cd1cabb29248096b1b7df77e6bdea372e5d0c353009e42
 
@@ -713,10 +732,12 @@ Tags:
 Deleted [gcr.io/qwiklabs-gcp-01-99ac96e9c528/monolith:2.0.0].
 Deleted [gcr.io/qwiklabs-gcp-01-99ac96e9c528/monolith@sha256:e63fab5e0a7bb8ed607285f99220cd2524252a6cacac0620033b8ed2a51c516e].
 ```
+```
 student_01_d8f47e91d77f@cloudshell:~ (qwiklabs-gcp-01-99ac96e9c528)$ # The following command will take all source archives from all builds and delete them from cloud storage
 student_01_d8f47e91d77f@cloudshell:~ (qwiklabs-gcp-01-99ac96e9c528)$ # Run this command to print all sources:
 student_01_d8f47e91d77f@cloudshell:~ (qwiklabs-gcp-01-99ac96e9c528)$ # gcloud builds list | awk 'NR > 1 {print $4}'
 student_01_d8f47e91d77f@cloudshell:~ (qwiklabs-gcp-01-99ac96e9c528)$ gcloud builds list | awk 'NR > 1 {print $4}' | while read line; do gsutil rm $line; done
+```
 ```
 Removing gs://qwiklabs-gcp-01-99ac96e9c528_cloudbuild/source/1630522631.97647-52da74efc91f43648f6772942dc532d7.tgz...
 / [1 objects]
@@ -727,6 +748,7 @@ Operation completed over 1 objects.
 Removing gs://qwiklabs-gcp-01-99ac96e9c528_cloudbuild/source/1630522055.224441-49547fb3e3ee4198a1df4d0acebb414e.tgz...
 / [1 objects]
 Operation completed over 1 objects.
+```
 ```
 student_01_d8f47e91d77f@cloudshell:~ (qwiklabs-gcp-01-99ac96e9c528)$ kubectl delete service monolith
 service "monolith" deleted
@@ -740,7 +762,8 @@ student_01_d8f47e91d77f@cloudshell:~ (qwiklabs-gcp-01-99ac96e9c528)$ gcloud cont
 The following clusters will be deleted.
 ```
 - [fancy-cluster] in [us-central1-f]
-
+```
 Do you want to continue (Y/n)?  y
 
 Deleting cluster fancy-cluster...⠧  
+```
