@@ -8,11 +8,17 @@ ACTIVE  ACCOUNT
 
 To set the active account, run:
     $ gcloud config set account `ACCOUNT`
-
+```
 student_01_d8f47e91d77f@cloudshell:~ (qwiklabs-gcp-01-99ac96e9c528)$ gcloud config set compute/zone us-central1-f
+```
 Updated property [compute/zone].
+
+```
 student_01_d8f47e91d77f@cloudshell:~ (qwiklabs-gcp-01-99ac96e9c528)$ gcloud services enable container.googleapis.com
+```
+```
 student_01_d8f47e91d77f@cloudshell:~ (qwiklabs-gcp-01-99ac96e9c528)$ gcloud container clusters create fancy-cluster --num-nodes 3
+```
 WARNING: Starting in January 2021, clusters will use the Regular release channel by default when `--cluster-version`, `--release-channel`, `--no-enable-autoupgrade`, and `--no-enable-autorepair` flags are not specified.
 WARNING: Currently VPC-native is not the default mode during cluster creation. In the future, this will become the default mode and can be disabled using `--no-enable-ip-alias` flag. Use `--[no-]enable-ip-alias` flag to suppress this warning.
 WARNING: Starting with version 1.18, clusters will have shielded GKE nodes by default.
@@ -22,15 +28,25 @@ Creating cluster fancy-cluster in us-central1-f...done.
 Created [https://container.googleapis.com/v1/projects/qwiklabs-gcp-01-99ac96e9c528/zones/us-central1-f/clusters/fancy-cluster].
 To inspect the contents of your cluster, go to: https://console.cloud.google.com/kubernetes/workload_/gcloud/us-central1-f/fancy-cluster?project=qwiklabs-gcp-01-99ac96e9c528
 kubeconfig entry generated for fancy-cluster.
+```
 NAME           LOCATION       MASTER_VERSION   MASTER_IP     MACHINE_TYPE  NODE_VERSION     NUM_NODES  STATUS
 fancy-cluster  us-central1-f  1.20.8-gke.2100  34.67.79.206  e2-medium     1.20.8-gke.2100  3          RUNNING
+```
+```
 student_01_d8f47e91d77f@cloudshell:~ (qwiklabs-gcp-01-99ac96e9c528)$ gcloud compute instances list
+```
+```
 NAME                                          ZONE           MACHINE_TYPE  PREEMPTIBLE  INTERNAL_IP  EXTERNAL_IP   STATUS
 gke-fancy-cluster-default-pool-0916f968-h1n0  us-central1-f  e2-medium                  10.128.0.2   34.122.68.2   RUNNING
 gke-fancy-cluster-default-pool-0916f968-l2h2  us-central1-f  e2-medium                  10.128.0.3   34.123.3.249  RUNNING
 gke-fancy-cluster-default-pool-0916f968-vdq8  us-central1-f  e2-medium                  10.128.0.4   34.133.86.57  RUNNING
+```
+```
 student_01_d8f47e91d77f@cloudshell:~ (qwiklabs-gcp-01-99ac96e9c528)$ cd ~
+```
+```
 student_01_d8f47e91d77f@cloudshell:~ (qwiklabs-gcp-01-99ac96e9c528)$ git clone https://github.com/googlecodelabs/monolith-to-microservices.git
+```
 Cloning into 'monolith-to-microservices'...
 remote: Enumerating objects: 988, done.
 remote: Counting objects: 100% (52/52), done.
@@ -38,8 +54,12 @@ remote: Compressing objects: 100% (52/52), done.
 remote: Total 988 (delta 39), reused 0 (delta 0), pack-reused 936
 Receiving objects: 100% (988/988), 2.82 MiB | 12.65 MiB/s, done.
 Resolving deltas: 100% (440/440), done.
+```
 student_01_d8f47e91d77f@cloudshell:~ (qwiklabs-gcp-01-99ac96e9c528)$ cd ~/monolith-to-microservices
+```
+```
 student_01_d8f47e91d77f@cloudshell:~/monolith-to-microservices (qwiklabs-gcp-01-99ac96e9c528)$ ./setup.sh
+```
 Checking for required npm version...Completed.
 Installing monolith dependencies...Completed.
 Installing microservies dependencies...Completed.
@@ -47,20 +67,27 @@ Installing React app dependencies...Completed.
 Building React app and placing into sub projects...Completed.
 
 Script completed successfully!
+```
 student_01_d8f47e91d77f@cloudshell:~/monolith-to-microservices (qwiklabs-gcp-01-99ac96e9c528)$ cd ~/monolith-to-microservices/monolith
+```
+```
 student_01_d8f47e91d77f@cloudshell:~/monolith-to-microservices/monolith (qwiklabs-gcp-01-99ac96e9c528)$ npm start
-
+```
 > monolith@1.0.0 start
 > node ./src/server.js
 
 Monolith listening on port 8080!
 
 ^C
+```
 student_01_d8f47e91d77f@cloudshell:~/monolith-to-microservices/monolith (qwiklabs-gcp-01-99ac96e9c528)$ gcloud services enable cloudbuild.googleapis.com
+```
+```
 student_01_d8f47e91d77f@cloudshell:~/monolith-to-microservices/monolith (qwiklabs-gcp-01-99ac96e9c528)$ cd ~/monolith-to-microservices/monolith
-student_01_d8f47e91d77f@cloudshell:~/monolith-to-microservices/monolith (qwiklabs-gcp-01-99ac96e9c528)$ LS -L
--bash: LS: command not found
+```
+```
 student_01_d8f47e91d77f@cloudshell:~/monolith-to-microservices/monolith (qwiklabs-gcp-01-99ac96e9c528)$ ls -l
+```
 total 60
 drwxr-xr-x  2 student_01_d8f47e91d77f student_01_d8f47e91d77f  4096 Sep  1 18:42 data
 -rw-r--r--  1 student_01_d8f47e91d77f student_01_d8f47e91d77f   965 Sep  1 18:42 Dockerfile
@@ -70,18 +97,9 @@ drwxr-xr-x 52 student_01_d8f47e91d77f student_01_d8f47e91d77f  4096 Sep  1 18:42
 -rw-r--r--  1 student_01_d8f47e91d77f student_01_d8f47e91d77f 31302 Sep  1 18:42 package-lock.json
 drwxr-xr-x  3 student_01_d8f47e91d77f student_01_d8f47e91d77f  4096 Sep  1 18:44 public
 drwxr-xr-x  2 student_01_d8f47e91d77f student_01_d8f47e91d77f  4096 Sep  1 18:42 src
-student_01_d8f47e91d77f@cloudshell:~/monolith-to-microservices/monolith (qwiklabs-gcp-01-99ac96e9c528)$ gcloud builds submit --tag
-ERROR: (gcloud.builds.submit) argument --tag/-t: expected one argument
-Usage: gcloud builds submit [[SOURCE] --no-source] [optional flags]
-  optional flags may be  --async | --no-cache | --config | --disk-size |
-                         --gcs-log-dir | --gcs-source-staging-dir | --help |
-                         --ignore-file | --machine-type | --pack | --region |
-                         --no-source | --substitutions | --suppress-logs |
-                         --tag | --timeout | --worker-pool
-
-For detailed information on this command and its flags, run:
-  gcloud builds submit --help
+```
 student_01_d8f47e91d77f@cloudshell:~/monolith-to-microservices/monolith (qwiklabs-gcp-01-99ac96e9c528)$ gcloud builds submit --tag gcr.io/${GOOGLE_CLOUD_PROJECT}/monolith:1.0.0 .
+```
 Creating temporary tarball archive of 33 file(s) totalling 2.4 MiB before compression.
 Uploading tarball of [.] to [gs://qwiklabs-gcp-01-99ac96e9c528_cloudbuild/source/1630522055.224441-49547fb3e3ee4198a1df4d0acebb414e.tgz]
 Created [https://cloudbuild.googleapis.com/v1/projects/qwiklabs-gcp-01-99ac96e9c528/locations/global/builds/529de535-f056-4980-9b98-c84420ea51af].
@@ -215,21 +233,29 @@ DONE
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 ID                                    CREATE_TIME                DURATION  SOURCE                                                                                                      IMAGES                                              STATUS
 529de535-f056-4980-9b98-c84420ea51af  2021-09-01T18:47:37+00:00  41S       gs://qwiklabs-gcp-01-99ac96e9c528_cloudbuild/source/1630522055.224441-49547fb3e3ee4198a1df4d0acebb414e.tgz  gcr.io/qwiklabs-gcp-01-99ac96e9c528/monolith:1.0.0  SUCCESS
+```
 student_01_d8f47e91d77f@cloudshell:~/monolith-to-microservices/monolith (qwiklabs-gcp-01-99ac96e9c528)$ kubectl create deployment monolith --image=gcr.io/${GOOGLE_CLOUD_PROJECT}/monolith:1.0.0
+```
 deployment.apps/monolith created
+```
 student_01_d8f47e91d77f@cloudshell:~/monolith-to-microservices/monolith (qwiklabs-gcp-01-99ac96e9c528)$ kubectl get deployment
+```
 NAME       READY   UP-TO-DATE   AVAILABLE   AGE
 monolith   0/1     1            0           17s
-student_01_d8f47e91d77f@cloudshell:~/monolith-to-microservices/monolith (qwiklabs-gcp-01-99ac96e9c528)$ kubectl get deployment
-NAME       READY   UP-TO-DATE   AVAILABLE   AGE
-monolith   0/1     1            0           21s
+```
 student_01_d8f47e91d77f@cloudshell:~/monolith-to-microservices/monolith (qwiklabs-gcp-01-99ac96e9c528)$ kubectl get pods
+```
 NAME                        READY   STATUS    RESTARTS   AGE
 monolith-5d5cfddf98-b8pgz   1/1     Running   0          27s
+```
 student_01_d8f47e91d77f@cloudshell:~/monolith-to-microservices/monolith (qwiklabs-gcp-01-99ac96e9c528)$ kubectl get deployment
+```
 NAME       READY   UP-TO-DATE   AVAILABLE   AGE
 monolith   1/1     1            1           30s
+```
 student_01_d8f47e91d77f@cloudshell:~/monolith-to-microservices/monolith (qwiklabs-gcp-01-99ac96e9c528)$ kubectl get all
+```
+```
 NAME                            READY   STATUS    RESTARTS   AGE
 pod/monolith-5d5cfddf98-b8pgz   1/1     Running   0          44s
 
@@ -241,35 +267,22 @@ deployment.apps/monolith   1/1     1            1           44s
 
 NAME                                  DESIRED   CURRENT   READY   AGE
 replicaset.apps/monolith-5d5cfddf98   1         1         1       44s
+```
+```
 student_01_d8f47e91d77f@cloudshell:~/monolith-to-microservices/monolith (qwiklabs-gcp-01-99ac96e9c528)$ kubectl expose deployment monolith --type=LoadBalancer --port 80 --target-port 8080
 service/monolith exposed
-student_01_d8f47e91d77f@cloudshell:~/monolith-to-microservices/monolith (qwiklabs-gcp-01-99ac96e9c528)$ kubectl get service
-NAME         TYPE           CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE
-kubernetes   ClusterIP      10.19.240.1    <none>        443/TCP        12m
-monolith     LoadBalancer   10.19.250.21   <pending>     80:32719/TCP   16s
-student_01_d8f47e91d77f@cloudshell:~/monolith-to-microservices/monolith (qwiklabs-gcp-01-99ac96e9c528)$ kubectl get service
-NAME         TYPE           CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE
-kubernetes   ClusterIP      10.19.240.1    <none>        443/TCP        12m
-monolith     LoadBalancer   10.19.250.21   <pending>     80:32719/TCP   22s
-student_01_d8f47e91d77f@cloudshell:~/monolith-to-microservices/monolith (qwiklabs-gcp-01-99ac96e9c528)$ kubectl get service
-NAME         TYPE           CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE
-kubernetes   ClusterIP      10.19.240.1    <none>        443/TCP        12m
-monolith     LoadBalancer   10.19.250.21   <pending>     80:32719/TCP   24s
-student_01_d8f47e91d77f@cloudshell:~/monolith-to-microservices/monolith (qwiklabs-gcp-01-99ac96e9c528)$ kubectl get service
-NAME         TYPE           CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE
-kubernetes   ClusterIP      10.19.240.1    <none>        443/TCP        12m
-monolith     LoadBalancer   10.19.250.21   <pending>     80:32719/TCP   27s
-student_01_d8f47e91d77f@cloudshell:~/monolith-to-microservices/monolith (qwiklabs-gcp-01-99ac96e9c528)$ kubectl get service
-NAME         TYPE           CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE
-kubernetes   ClusterIP      10.19.240.1    <none>        443/TCP        12m
-monolith     LoadBalancer   10.19.250.21   <pending>     80:32719/TCP   31s
+```
 student_01_d8f47e91d77f@cloudshell:~/monolith-to-microservices/monolith (qwiklabs-gcp-01-99ac96e9c528)$ kubectl get service
 NAME         TYPE           CLUSTER-IP     EXTERNAL-IP     PORT(S)        AGE
 kubernetes   ClusterIP      10.19.240.1    <none>          443/TCP        12m
 monolith     LoadBalancer   10.19.250.21   35.188.77.160   80:32719/TCP   41s
+```
 student_01_d8f47e91d77f@cloudshell:~/monolith-to-microservices/monolith (qwiklabs-gcp-01-99ac96e9c528)$ kubectl scale deployment monolith --replicas=3
 deployment.apps/monolith scaled
+```
+```
 student_01_d8f47e91d77f@cloudshell:~/monolith-to-microservices/monolith (qwiklabs-gcp-01-99ac96e9c528)$ kubectl get all
+```
 NAME                            READY   STATUS              RESTARTS   AGE
 pod/monolith-5d5cfddf98-b8pgz   1/1     Running             0          4m26s
 pod/monolith-5d5cfddf98-ddj2j   1/1     Running             0          8s
@@ -284,9 +297,12 @@ deployment.apps/monolith   2/3     3            2           4m27s
 
 NAME                                  DESIRED   CURRENT   READY   AGE
 replicaset.apps/monolith-5d5cfddf98   3         3         2       4m27s
+```
 student_01_d8f47e91d77f@cloudshell:~/monolith-to-microservices/monolith (qwiklabs-gcp-01-99ac96e9c528)$ cd ~/monolith-to-microservices/react-app/src/pages/Home
 student_01_d8f47e91d77f@cloudshell:~/monolith-to-microservices/react-app/src/pages/Home (qwiklabs-gcp-01-99ac96e9c528)$ mv index.js.new index.js
 student_01_d8f47e91d77f@cloudshell:~/monolith-to-microservices/react-app/src/pages/Home (qwiklabs-gcp-01-99ac96e9c528)$ cat ~/monolith-to-microservices/react-app/src/pages/Home/index.js
+```
+```
 /*
 Copyright 2019 Google LLC
 
@@ -334,8 +350,11 @@ export default function Home() {
       </Paper>
     </div>
   );
-}student_01_d8f47e91d77f@cloudshell:~/monolith-to-microservices/react-app/src/pages/Home (qwiklabs-gcp-01-99ac96e9c528)$ cd ~/monolith-to-microservices/react-apstudent_01_d8f47e91d77f@cloudshell:~/monolith-to-microservices/react-app (qwiklabs-gcp-01-99ac96e9c528)$ npm run build:monolith
-
+}
+```
+```
+student_01_d8f47e91d77f@cloudshell:~/monolith-to-microservices/react-app/src/pages/Home (qwiklabs-gcp-01-99ac96e9c528)$ cd ~/monolith-to-microservices/react-apstudent_01_d8f47e91d77f@cloudshell:~/monolith-to-microservices/react-app (qwiklabs-gcp-01-99ac96e9c528)$ npm run build:monolith
+```
 > frontend@0.1.0 build:monolith
 > env-cmd -f .env.monolith react-scripts build
 
@@ -374,8 +393,12 @@ Deleting stale folder: ../monolith/public
 Deleted stale destination folder: ../monolith/public
 Copying files from ./build to ../monolith/public
 Copied ./build to ../monolith/public successfully!
+```
 student_01_d8f47e91d77f@cloudshell:~/monolith-to-microservices/react-app (qwiklabs-gcp-01-99ac96e9c528)$ cd ~/monolith-to-microservices/monolith
+```
+```
 student_01_d8f47e91d77f@cloudshell:~/monolith-to-microservices/monolith (qwiklabs-gcp-01-99ac96e9c528)$ gcloud builds submit --tag gcr.io/${GOOGLE_CLOUD_PROJECT}/monolith:2.0.0 .
+```
 Creating temporary tarball archive of 33 file(s) totalling 2.4 MiB before compression.
 Uploading tarball of [.] to [gs://qwiklabs-gcp-01-99ac96e9c528_cloudbuild/source/1630522568.205373-a791bff0ea1b43cdb50f8bdce8ab5067.tgz]
 Created [https://cloudbuild.googleapis.com/v1/projects/qwiklabs-gcp-01-99ac96e9c528/locations/global/builds/1d3de4c0-40a7-4e51-a9a3-503d812d8121].
@@ -508,7 +531,9 @@ DONE
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 ID                                    CREATE_TIME                DURATION  SOURCE                                                                                                      IMAGES                                              STATUS
 1d3de4c0-40a7-4e51-a9a3-503d812d8121  2021-09-01T18:56:09+00:00  42S       gs://qwiklabs-gcp-01-99ac96e9c528_cloudbuild/source/1630522568.205373-a791bff0ea1b43cdb50f8bdce8ab5067.tgz  gcr.io/qwiklabs-gcp-01-99ac96e9c528/monolith:2.0.0  SUCCESS
+```
 student_01_d8f47e91d77f@cloudshell:~/monolith-to-microservices/monolith (qwiklabs-gcp-01-99ac96e9c528)$ gcloud builds submit --tag gcr.io/${GOOGLE_CLOUD_PROJECT}/monolith:2.0.0 .
+```
 Creating temporary tarball archive of 33 file(s) totalling 2.4 MiB before compression.
 Uploading tarball of [.] to [gs://qwiklabs-gcp-01-99ac96e9c528_cloudbuild/source/1630522631.97647-52da74efc91f43648f6772942dc532d7.tgz]
 Created [https://cloudbuild.googleapis.com/v1/projects/qwiklabs-gcp-01-99ac96e9c528/locations/global/builds/a87ba5bc-2f37-4619-a87d-332b1aa2da8e].
@@ -640,15 +665,21 @@ DONE
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 ID                                    CREATE_TIME                DURATION  SOURCE                                                                                                     IMAGES                                              STATUS
 a87ba5bc-2f37-4619-a87d-332b1aa2da8e  2021-09-01T18:57:13+00:00  39S       gs://qwiklabs-gcp-01-99ac96e9c528_cloudbuild/source/1630522631.97647-52da74efc91f43648f6772942dc532d7.tgz  gcr.io/qwiklabs-gcp-01-99ac96e9c528/monolith:2.0.0  SUCCESS
+```
 student_01_d8f47e91d77f@cloudshell:~/monolith-to-microservices/monolith (qwiklabs-gcp-01-99ac96e9c528)$ kubectl set image deployment/monolith monolith=gcr.io/${GOOGLE_CLOUD_PROJECT}/monolith:2.0.0
 deployment.apps/monolith image updated
+```
+```
 student_01_d8f47e91d77f@cloudshell:~/monolith-to-microservices/monolith (qwiklabs-gcp-01-99ac96e9c528)$ kubectl get pods
+```
 NAME                        READY   STATUS              RESTARTS   AGE
 monolith-5d5cfddf98-b8pgz   1/1     Running             0          8m18s
 monolith-5d5cfddf98-ddj2j   1/1     Running             0          4m
 monolith-5d5cfddf98-nssdd   1/1     Running             0          4m
 monolith-67cd5755b7-wk98g   0/1     ContainerCreating   0          9s
+```
 student_01_d8f47e91d77f@cloudshell:~/monolith-to-microservices/monolith (qwiklabs-gcp-01-99ac96e9c528)$ kubectl get pods
+```
 NAME                        READY   STATUS        RESTARTS   AGE
 monolith-5d5cfddf98-b8pgz   1/1     Terminating   0          9m1s
 monolith-5d5cfddf98-ddj2j   1/1     Terminating   0          4m43s
@@ -656,10 +687,12 @@ monolith-5d5cfddf98-nssdd   1/1     Terminating   0          4m43s
 monolith-67cd5755b7-5ctsr   1/1     Running       0          23s
 monolith-67cd5755b7-r67td   1/1     Running       0          26s
 monolith-67cd5755b7-wk98g   1/1     Running       0          52s
+```
 student_01_d8f47e91d77f@cloudshell:~/monolith-to-microservices/monolith (qwiklabs-gcp-01-99ac96e9c528)$ cd ~
 student_01_d8f47e91d77f@cloudshell:~ (qwiklabs-gcp-01-99ac96e9c528)$ rm -rf monolith-to-microservices
 student_01_d8f47e91d77f@cloudshell:~ (qwiklabs-gcp-01-99ac96e9c528)$ # Delete the container image for version 1.0.0 of the monolith
 student_01_d8f47e91d77f@cloudshell:~ (qwiklabs-gcp-01-99ac96e9c528)$ gcloud container images delete gcr.io/${GOOGLE_CLOUD_PROJECT}/monolith:1.0.0 --quiet
+```
 Digests:
 - gcr.io/qwiklabs-gcp-01-99ac96e9c528/monolith@sha256:10d5b4bf3f458429a8cd1cabb29248096b1b7df77e6bdea372e5d0c353009e42
 
@@ -679,10 +712,12 @@ Tags:
 - gcr.io/qwiklabs-gcp-01-99ac96e9c528/monolith:2.0.0
 Deleted [gcr.io/qwiklabs-gcp-01-99ac96e9c528/monolith:2.0.0].
 Deleted [gcr.io/qwiklabs-gcp-01-99ac96e9c528/monolith@sha256:e63fab5e0a7bb8ed607285f99220cd2524252a6cacac0620033b8ed2a51c516e].
+```
 student_01_d8f47e91d77f@cloudshell:~ (qwiklabs-gcp-01-99ac96e9c528)$ # The following command will take all source archives from all builds and delete them from cloud storage
 student_01_d8f47e91d77f@cloudshell:~ (qwiklabs-gcp-01-99ac96e9c528)$ # Run this command to print all sources:
 student_01_d8f47e91d77f@cloudshell:~ (qwiklabs-gcp-01-99ac96e9c528)$ # gcloud builds list | awk 'NR > 1 {print $4}'
 student_01_d8f47e91d77f@cloudshell:~ (qwiklabs-gcp-01-99ac96e9c528)$ gcloud builds list | awk 'NR > 1 {print $4}' | while read line; do gsutil rm $line; done
+```
 Removing gs://qwiklabs-gcp-01-99ac96e9c528_cloudbuild/source/1630522631.97647-52da74efc91f43648f6772942dc532d7.tgz...
 / [1 objects]
 Operation completed over 1 objects.
@@ -692,14 +727,19 @@ Operation completed over 1 objects.
 Removing gs://qwiklabs-gcp-01-99ac96e9c528_cloudbuild/source/1630522055.224441-49547fb3e3ee4198a1df4d0acebb414e.tgz...
 / [1 objects]
 Operation completed over 1 objects.
+```
 student_01_d8f47e91d77f@cloudshell:~ (qwiklabs-gcp-01-99ac96e9c528)$ kubectl delete service monolith
 service "monolith" deleted
-
+```
+```
 student_01_d8f47e91d77f@cloudshell:~ (qwiklabs-gcp-01-99ac96e9c528)$ kubectl delete deployment monolith
 deployment.apps "monolith" deleted
+```
+```
 student_01_d8f47e91d77f@cloudshell:~ (qwiklabs-gcp-01-99ac96e9c528)$ gcloud container clusters delete fancy-cluster
 The following clusters will be deleted.
- - [fancy-cluster] in [us-central1-f]
+```
+- [fancy-cluster] in [us-central1-f]
 
 Do you want to continue (Y/n)?  y
 
