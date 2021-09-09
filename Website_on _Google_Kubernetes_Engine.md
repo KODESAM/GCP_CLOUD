@@ -559,8 +559,10 @@ Delete Google Cloud Build artifacts from Google Cloud Storage:
 
 # The following command will take all source archives from all builds and delete them from cloud storage
 # Run this command to print all sources:
+``` 
 # gcloud builds list | awk 'NR > 1 {print $4}'
 gcloud builds list | awk 'NR > 1 {print $4}' | while read line; do gsutil rm $line; done
+``` 
 Delete GKE Service:
 ```
 kubectl delete service monolith
