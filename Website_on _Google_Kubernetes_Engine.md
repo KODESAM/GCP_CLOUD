@@ -94,8 +94,9 @@ Cloud Shell Terminal
 gcloud is the command-line tool for Google Cloud. It comes pre-installed on Cloud Shell and supports tab-completion.
 
 You can list the active account name with this command:
-
+```
 gcloud auth list
+```
 (Output)
 
 Credentialed accounts:
@@ -106,7 +107,10 @@ Credentialed accounts:
  - google1623327_student@qwiklabs.net
 You can list the project ID with this command:
 
+``` 
 gcloud config list project
+``` 
+ 
 (Output)
 
 [core]
@@ -118,7 +122,10 @@ project = qwiklabs-gcp-44776a13dea667a6
 For full documentation of gcloud see the gcloud command-line tool overview.
 Set the default zone and project configuration:
 
+```
 gcloud config set compute/zone us-central1-f
+
+```
 Learn more in the Regions & Zones documentation.
 
 Create a GKE cluster
@@ -126,28 +133,35 @@ You need a Kubernetes cluster to deploy your website to. First, make sure the pr
 
 Run the following command to enable the Container Registry API:
 
+``` 
 gcloud services enable container.googleapis.com
+
+```
 Now you are ready to create a cluster!
 
 Run the following to create a GKE cluster named fancy-cluster with 3 nodes:
 
+``` 
 gcloud container clusters create fancy-cluster --num-nodes 3
+
+```
 If you get an error about region/zone not being specified, please see the environment setup section to make sure you set the default compute zone.
 
 It will take a few minutes for the cluster to be created.
 
 Now run the following command and see the cluster's three worker VM instances:
-
+```
 gcloud compute instances list
-Output:
 
+```
+Output:
+```
 NAME                                          ZONE        MACHINE_TYPE   PREEMPTIBLE  INTERNAL_IP  EXTERNAL_IP    STATUS
 gke-fancy-cluster-default-pool-ad92506d-1ng3  us-east4-a  n1-standard-1               10.150.0.7   XX.XX.XX.XX    RUNNING
 gke-fancy-cluster-default-pool-ad92506d-4fvq  us-east4-a  n1-standard-1               10.150.0.5   XX.XX.XX.XX    RUNNING
 gke-fancy-cluster-default-pool-ad92506d-4zs3  us-east4-a  n1-standard-1               10.150.0.6   XX.XX.XX.XX    RUNNING
 Find your Kubernetes cluster and related information in the Google Cloud console. Click the Navigation menu, then scroll down to Kubernetes Engine and click Clusters.
-
-795c794b03c5d2b0.png
+```
 
 You should see your cluster named fancy-cluster.
 
@@ -161,19 +175,24 @@ Clone source repository
 Since this is an existing website, you just need to clone the source, so you can focus on creating Docker images and deploying to GKE.
 
 Run the following commands to clone the git repo to your Cloud Shell instance:
-
+```
 cd ~
 git clone https://github.com/googlecodelabs/monolith-to-microservices.git
+ 
+```
 Change to the appropriate directory. You will also install the NodeJS dependencies so you can test your application before deploying:
-
+```
 cd ~/monolith-to-microservices
 ./setup.sh
+ 
+```
 Wait a few minutes for this script to finish running.
 
 Change to the appropriate directory and test the application by running the following command to start the web server:
-
+```
 cd ~/monolith-to-microservices/monolith
 npm start
+```
 Output:
 
 Monolith listening on port 8080!
@@ -196,12 +215,16 @@ Normally you would have to take a two step approach that entails building a Dock
 Google Cloud Build will compress the files from the directory and move them to a Google Cloud Storage bucket. The build process will then take all the files from the bucket and use the Dockerfile to run the Docker build process. Since we specified the --tag flag with the host as gcr.io for the Docker image, the resulting Docker image will be pushed to the Google Cloud Container Registry.
 
 First, to make sure you have the Cloud Build API enable, run the following command:
-
+```
 gcloud services enable cloudbuild.googleapis.com
-Run the following to start the build process:
 
+```
+Run the following to start the build process:
+```
 cd ~/monolith-to-microservices/monolith
 gcloud builds submit --tag gcr.io/${GOOGLE_CLOUD_PROJECT}/monolith:1.0.0 .
+``` 
+```
 This process will take a few minutes.
 
 There will be output in the terminal similar to the following:
@@ -210,13 +233,10 @@ There will be output in the terminal similar to the following:
 ID                                    CREATE_TIME                DURATION  SOURCE                                                                                  IMAGES                              STATUS
 1ae295d9-63cb-482c-959b-bc52e9644d53  2019-08-29T01:56:35+00:00  33S       gs://<PROJECT_ID>_cloudbuild/source/1567043793.94-abfd382011724422bf49af1558b894aa.tgz  gcr.io/<PROJECT_ID>/monolith:1.0.0  SUCCESS
 To view your build history or watch the process in real time by clicking the Navigation menu and scrolling down to Tools section, then click Cloud Build > History. Here you can see a list of all your previous builds.
-
-181cf510d755b855.png
-
+```
 Click on the build name to see all the details for that build including the log output.
 
 Optional: From the Build details page, click on the image name in the build information section to see the container image:
-
 
 Click Check my progress to verify the objective.
 Create Docker container with Cloud Build
@@ -233,8 +253,10 @@ To deploy your application, create a Deployment resource. The Deployment manages
 The kubectl create deployment command you'll use next causes Kubernetes to create a Deployment named monolith on your cluster with 1 replica.
 
 Run the following command to deploy your application:
-
+```
 kubectl create deployment monolith --image=gcr.io/${GOOGLE_CLOUD_PROJECT}/monolith:1.0.0
+ 
+```
 Note: As a best practice, using YAML file and a source control system such as GitHub or Cloud Source Repositories is recommended to store those changes. See these resources for more information: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
 
 Click Check my progress to verify the objective.
@@ -242,12 +264,14 @@ Deploy container to GKE
 
 Verify Deployment
 Verify the Deployment was created successfully:
-
+```
 kubectl get all
+ 
+```
 Rerun the command until the pod status is Running.
 
 Output:
-
+```
 NAME                            READY   STATUS    RESTARTS   AGE
 pod/monolith-7d8bc7bf68-htm7z   1/1     Running   0          6m21s
 NAME                 TYPE        CLUSTER-IP    EXTERNAL-IP   PORT(S)   AGE
@@ -256,6 +280,7 @@ NAME                       DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
 deployment.apps/monolith   1         1         1            1           20m
 NAME                                  DESIRED   CURRENT   READY   AGE
 replicaset.apps/monolith-7d8bc7bf68   1         1         1       20m
+```
 This output shows you several things:
 
 The Deployment, which is current
@@ -266,7 +291,7 @@ Looks like everything was created successfully!
 You can also view your Kubernetes deployments via the Console. Navigation menu > Kubernetes Engine > Workloads.
 
 Note: If you are seeing errors or statuses you do not expect, you can debug your resources with the following commands to see detailed information about them:
-
+```
 kubectl describe pod monolith
 
 kubectl describe pod/monolith-7d8bc7bf68-2bxts
@@ -275,30 +300,49 @@ kubectl describe deployment monolith
 
 kubectl describe deployment.apps/monolith
 
+```
 At the very end of the output, you will see a list of events that give errors and detailed information about your resources.
 
 Optional: You can run commands to your deployments separately as well:
 
 # Show pods
+```
 kubectl get pods
+```
 # Show deployments
+ 
+```
 kubectl get deployments
+ 
+```
 # Show replica sets
+
+```
 kubectl get rs
+ 
+```
 #You can also combine them
+ 
+```
 kubectl get pods,deployments
+ 
+```
 To see the full benefit of Kubernetes, simulate a server crash by deleting a pod and see what happens!
 
 Copy a pod name from the previous command, then use it when you run the following command to delete it:
-
+```
 kubectl delete pod/<POD_NAME>
+ 
+```
 You can watch the deletion from the Workloads page - click on the workload name (it will happen quickly).
 
 If you are fast enough, you can run get all again, and you should see two pods: one terminating and the other creating or running:
-
+```
 kubectl get all
+ 
+```
 Output:
-
+```
 NAME                            READY   STATUS        RESTARTS   AGE
 pod/monolith-7d8bc7bf68-2bxts   1/1     Running       0          4s
 pod/monolith-7d8bc7bf68-htm7z   1/1     Terminating   0          9m35s
@@ -308,22 +352,29 @@ NAME                       DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
 deployment.apps/monolith   1         1         1            1           24m
 NAME                                  DESIRED   CURRENT   READY   AGE
 replicaset.apps/monolith-7d8bc7bf68   1         1         1       24m
+ 
+```
 Why did this happen? The ReplicaSet saw that the pod was terminating and triggered a new pod to keep up the desired replica count. Later on you will see how to scale out to ensure there are several instances running, so if one goes down users won't see any downtime!
 
 Expose GKE Deployment
 You have deployed your application on GKE, but you don't havthere isn't a way to access it outside of the cluster. By default, the containers you run on GKE are not accessible from the Internet because they do not have external IP addresses. You must explicitly expose your application to traffic from the Internet via a Service resource. A Service provides networking and IP support to your application's Pods. GKE creates an external IP and a Load Balancer for your application.
 
 Run the following command to expose your website to the Internet:
-
+```
 kubectl expose deployment monolith --type=LoadBalancer --port 80 --target-port 8080
+
+```
 Accessing the service
 GKE assigns the external IP address to the Service resource, not the Deployment. If you want to find out the external IP that GKE provisioned for your application, you can inspect the Service with the kubectl get service command:
-
+```
 kubectl get service
-Output:
 
+```
+Output:
+```
 NAME         CLUSTER-IP      EXTERNAL-IP     PORT(S)          AGE
 monolith     10.3.251.122    203.0.113.0     80:30877/TCP     3d
+```
 Re-run the command until your service has an external IP address.
 
 Once you've determined the external IP address for your application, copy the IP address, then point your browser the URL (such as http://203.0.113.0) to check if your application is accessible.
@@ -337,13 +388,17 @@ Scale GKE deployment
 Now that your application is running in GKE and is exposed to the internet, imagine your website has become extremely popular! You need a way to scale your application to multiple instances so it can handle all this traffic. Next you will learn how to scale the application up to 3 replicas.
 
 In Cloud Shell, run the following command to scale you deployment up to 3 replicas:
-
+```
 kubectl scale deployment monolith --replicas=3
+ 
+```
 Verify the Deployment was scaled successfully:
-
+```
 kubectl get all
+ 
+```
 Output:
-
+```
 NAME                            READY   STATUS    RESTARTS   AGE
 pod/monolith-7d8bc7bf68-2bxts   1/1     Running   0          36m
 pod/monolith-7d8bc7bf68-7ds7q   1/1     Running   0          45s
@@ -355,6 +410,8 @@ NAME                       DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
 deployment.apps/monolith   3         3         3            3           61m
 NAME                                  DESIRED   CURRENT   READY   AGE
 replicaset.apps/monolith-7d8bc7bf68   3         3         3       61m
+ 
+```
 You should now see 3 instances of your pod running. Notice that your deployment and replica set now have a desired count of 3.
 
 Click Check my progress to verify the objective.
@@ -366,12 +423,16 @@ Scenario: Your marketing team has asked you to change the homepage for your site
 Task: You will add some text to the homepage to make the marketing team happy! It looks like one of the developers have already created the changes with the file name index.js.new. You can just copy this file to index.js and the changes should be reflected. Follow the instructions below to make the appropriate changes.
 
 Run the following commands copy the updated file to the correct file name:
-
+```
 cd ~/monolith-to-microservices/react-app/src/pages/Home
 mv index.js.new index.js
+ 
+```
 Print its contents to verify the changes:
-
+```
 cat ~/monolith-to-microservices/react-app/src/pages/Home/index.js
+ 
+```
 The resulting code should look like this:
 
 /*
@@ -385,6 +446,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+```
 */
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
@@ -418,18 +480,23 @@ export default function Home() {
     </div>
   );
 }
+ 
+```
 The React components were updated, but the React app needs to be built to generate the static files.
 
 Run the following command to build the React app and copy it into the monolith public directory:
-
+```
 cd ~/monolith-to-microservices/react-app
 npm run build:monolith
+```
 Now that the code is updated, you need to rebuild the Docker container and publish it to the Google Cloud Container Registry. Use the same command as earlier, except this time update the version label.
 
 Run the following command to trigger a new cloud build with an updated image version of 2.0.0:
-
+```
 cd ~/monolith-to-microservices/monolith
 gcloud builds submit --tag gcr.io/${GOOGLE_CLOUD_PROJECT}/monolith:2.0.0 .
+
+```
 In the next section you will use this image to update your application with zero downtime.
 
 Click Check my progress to verify the objective.
@@ -441,14 +508,16 @@ The changes are completed and the marketing team is happy with your updates! It 
 GKE's rolling update mechanism ensures that your application remains up and available even as the system replaces instances of your old container image with your new one across all the running replicas.
 
 Tell Kubernetes that you want to update the image for your deployment to a new version with the following command:
-
+```
 kubectl set image deployment/monolith monolith=gcr.io/${GOOGLE_CLOUD_PROJECT}/monolith:2.0.0
+```
 Verify Deployment
 You can validate your deployment update by running the following command:
-
+```
 kubectl get pods
+```
 Output:
-
+```
 NAME                        READY   STATUS              RESTARTS   AGE
 monolith-584fbc994b-4hj68   1/1     Terminating         0          60m
 monolith-584fbc994b-fpwdw   1/1     Running             0          60m
@@ -456,6 +525,8 @@ monolith-584fbc994b-xsk8s   1/1     Terminating         0          60m
 monolith-75f4cf58d5-24cq8   1/1     Running             0          3s
 monolith-75f4cf58d5-rfj8r   1/1     Running             0          5s
 monolith-75f4cf58d5-xm44v   0/1     ContainerCreating   0          1s
+
+```
 Here you will see 3 new pods being created and your old pods getting shut down. You can tell by the age which are new and which are old. Eventually, you will only see 3 pods again which will be your 3 updated pods.
 
 To verify our changes, return to the app web page tab and refresh the page. Notice that your application has been updated.
@@ -470,15 +541,20 @@ Cleanup
 Although all resources will be deleted with you complete this lab, in your own environment it's a good idea to remove resources you no longer need.
 
 Delete git repository:
-
+```
 cd ~
 rm -rf monolith-to-microservices
+```
 Delete Google Container Registry images:
 
 # Delete the container image for version 1.0.0 of the monolith
+```
 gcloud container images delete gcr.io/${GOOGLE_CLOUD_PROJECT}/monolith:1.0.0 --quiet
+```
 # Delete the container image for version 2.0.0 of the monolith
+```
 gcloud container images delete gcr.io/${GOOGLE_CLOUD_PROJECT}/monolith:2.0.0 --quiet
+```
 Delete Google Cloud Build artifacts from Google Cloud Storage:
 
 # The following command will take all source archives from all builds and delete them from cloud storage
@@ -486,10 +562,12 @@ Delete Google Cloud Build artifacts from Google Cloud Storage:
 # gcloud builds list | awk 'NR > 1 {print $4}'
 gcloud builds list | awk 'NR > 1 {print $4}' | while read line; do gsutil rm $line; done
 Delete GKE Service:
-
+```
 kubectl delete service monolith
 kubectl delete deployment monolith
+```
 Delete GKE Cluster:
-
+```
 gcloud container clusters delete fancy-cluster
+```
 Type "Y" to confirm this action. This command may take a little while.
